@@ -6,6 +6,7 @@ import {
   patchTicketSchema,
   replyTicketSchema,
   noteTicketSchema,
+  draftTicketSchema,
 } from '../controllers/adminTicketController';
 import { validate } from '../middleware/validate';
 import { requireRole } from '../middleware/requireRole';
@@ -49,4 +50,10 @@ adminRouter.post(
   '/tickets/:id/triage',
   validate({ params: adminTicketIdParamSchema }),
   adminTicketController.retryTriage
+);
+
+adminRouter.post(
+  '/tickets/:id/draft',
+  validate({ params: adminTicketIdParamSchema, body: draftTicketSchema }),
+  adminTicketController.generateDraft
 );

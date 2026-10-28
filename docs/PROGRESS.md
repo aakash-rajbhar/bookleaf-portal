@@ -13,7 +13,7 @@
 | T08 | Admin ticket endpoints (queue filters, patch, notes, reply) | done |
 | T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | done |
 | T10 | AI: triage (classify+priority) + fallback classifier + usage log | done |
-| T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | todo |
+| T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | done |
 | T12 | Frontend scaffold + author portal | todo |
 | T13 | Admin portal | todo |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T10 complete (implemented async AI ticket triage with `triageTicket`, system prompt & few-shots in `ai/prompts/triage.ts`, code-level guardrails in `applyTriageGuardrails` forcing ISBN issues to at least High priority, pure `fallbackClassifier` with keyword rules, single-concurrency in-memory `triageQueue` preserving admin overrides, startup recovery for pending tickets older than 1m, admin retry triage endpoint `POST /admin/tickets/:id/triage` returning 202, 19 labeled test cases in `triageCases.json`, and `eval:triage` script measuring category and priority accuracy).
-- Not done: T11 AI draft generation.
-- Next: T11 (`docs/tasks/T11-draft-responses.md`).
+- Done: T11 complete (applied migration `003_draft_source.sql` adding `source` check constraint and nullable model on `ai_drafts`; created `ai/knowledgeBase.ts` with strict category slicing; implemented pure `ai/bookFacts.ts` computing overdue status, rollover thresholds, and calendar-quarter deadlines; built `ai/prompts/draft.ts` with untrusted ticket delimiters and word caps; implemented pure `ai/fallbackDraft.ts` templates; created on-demand cached `services/draftService.ts` and `POST /admin/tickets/:id/draft` admin endpoint; updated `adminTicketService.ts` and `mappers.ts` to expose `latestDraft` with source on `GET /admin/tickets/:id`; created `scripts/draft-check.ts` verifying prompt sizing and facts for BK005, BK016, BK013, BK002, and General; logged D16 and D17 in `docs/DECISIONS.md`; updated `docs/API.md`).
+- Not done: T12 Frontend scaffold + author portal.
+- Next: T12 (`docs/tasks/T12-frontend-scaffold.md` or next task).
 - Known bugs: none.

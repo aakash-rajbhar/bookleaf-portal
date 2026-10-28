@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { adminTicketService } from '../services/adminTicketService';
+import { draftService } from '../services/draftService';
 import {
   TICKET_STATUSES,
   TICKET_CATEGORIES,
@@ -59,6 +60,12 @@ export const noteTicketSchema = z.object({
     .max(2000, 'Note content cannot exceed 2000 characters'),
 });
 
+export const draftTicketSchema = z
+  .object({
+    regenerate: z.boolean().optional(),
+  })
+  .optional();
+
 export class AdminTicketController {
   async list(req: Request, res: Response) {
     const result = await adminTicketService.listTickets(
@@ -103,6 +110,13 @@ export class AdminTicketController {
   async retryTriage(req: Request, res: Response) {
     const result = await adminTicketService.retryTriage(req.params.id as string);
     res.status(202).json(result);
+  }
+
+  async generateDraft(req: Request, res: Response) {
+    const result = await draftService.generate(req.params.id as string, {
+      regenerate: Boolean(req.body?.regenerate),
+    });
+    res.status(200).json(result);
   }
 }
 

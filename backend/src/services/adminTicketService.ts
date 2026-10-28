@@ -299,7 +299,7 @@ export class AdminTicketService {
 
     // Fetch latest AI draft
     const draftSql = `
-      SELECT id, draft_text, model, created_at::text AS created_at
+      SELECT id, draft_text, model, source, created_at::text AS created_at
       FROM ai_drafts
       WHERE ticket_id = $1
       ORDER BY created_at DESC
@@ -308,7 +308,8 @@ export class AdminTicketService {
     const draftRows = await query<{
       id: string;
       draft_text: string;
-      model: string;
+      model: string | null;
+      source: 'ai' | 'template';
       created_at: string;
     }>(draftSql, [ticketId]);
 
@@ -318,6 +319,7 @@ export class AdminTicketService {
             id: draftRows[0].id,
             draftText: draftRows[0].draft_text,
             model: draftRows[0].model,
+            source: draftRows[0].source,
             createdAt: draftRows[0].created_at,
           }
         : null;

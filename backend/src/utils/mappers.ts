@@ -200,7 +200,8 @@ export interface AdminInternalNoteResponse {
 export interface AdminDraftResponse {
   id: string;
   draftText: string;
-  model: string;
+  model: string | null;
+  source: 'ai' | 'template';
   createdAt: string;
 }
 
