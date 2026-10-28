@@ -14,14 +14,17 @@
 | T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | done |
 | T10 | AI: triage (classify+priority) + fallback classifier + usage log | done |
 | T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | done |
-| T12 | Frontend scaffold + author portal | todo |
+| T12a | Frontend scaffold, auth, routing, and api client | done |
+| T12b | Author books + submit query | todo |
+| T12c | Author tickets with live updates | todo |
 | T13 | Admin portal | todo |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T11 complete (applied migration `003_draft_source.sql` adding `source` check constraint and nullable model on `ai_drafts`; created `ai/knowledgeBase.ts` with strict category slicing; implemented pure `ai/bookFacts.ts` computing overdue status, rollover thresholds, and calendar-quarter deadlines; built `ai/prompts/draft.ts` with untrusted ticket delimiters and word caps; implemented pure `ai/fallbackDraft.ts` templates; created on-demand cached `services/draftService.ts` and `POST /admin/tickets/:id/draft` admin endpoint; updated `adminTicketService.ts` and `mappers.ts` to expose `latestDraft` with source on `GET /admin/tickets/:id`; created `scripts/draft-check.ts` verifying prompt sizing and facts for BK005, BK016, BK013, BK002, and General; logged D16 and D17 in `docs/DECISIONS.md`; updated `docs/API.md`).
-- Not done: T12 Frontend scaffold + author portal.
-- Next: T12 (`docs/tasks/T12-frontend-scaffold.md` or next task).
+- Done: T12a complete (scaffolded frontend in `./frontend` using Vite `react-ts` template and Tailwind CSS v4 via `@tailwindcss/vite` without extra UI libraries; added `react-router-dom`; configured dev proxy in `vite.config.ts` forwarding `/api` to port 4000; created `src/api/types.ts` strictly matching real backend mappers and controllers; created `src/api/client.ts` with error handling, 401 redirect, and token management; built `src/auth/AuthContext.tsx` with session restore from `GET /auth/me` and `src/auth/ProtectedRoute.tsx` with role-based redirects; implemented `src/components/{Layout,Spinner,ErrorBanner,EmptyState}.tsx`; implemented `src/pages/Login.tsx` with inline ApiError handling and collapsible demo logins hint; created page shells for `/books`, `/tickets`, `/tickets/new`, `/tickets/:id`, and `/admin/*`; added "Frontend rules" to `AGENTS.md`; recorded localStorage trade-off in `docs/DECISIONS.md` as D18; created `frontend/.env.example`).
+- Not done: T12b (Author books + submit query).
+- Next: T12b (`docs/tasks/T12b-author-books-submit.md`).
 - Known bugs: none.
+

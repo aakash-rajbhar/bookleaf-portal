@@ -34,6 +34,14 @@ Functionality 15% | Product thinking 10% | Docs 10%. The developer must be able 
 8. Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`), small commits.
 9. Do not invent policy. Anything the AI says must come from the KB or the author's real data.
 
+## Frontend rules
+1. Typed API access ONLY through `src/api/client.ts` (never call raw `fetch()` directly in components).
+2. No API keys or secrets anywhere in frontend code or frontend environment variables.
+3. Money values must be formatted in Indian rupees via `Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' })`.
+4. Null / missing values show an em dash (`—`), never `0`, empty string, or `"null"`.
+5. Every view and page MUST implement loading, error, and empty states.
+6. Admin fields (category, priority, triage AI fields, internal notes) must NEVER be rendered in author views.
+
 ## Workflow protocol (this makes agent switching seamless)
 - BEFORE starting: read `docs/PROGRESS.md`, then the single task file you are working on in `docs/tasks/`.
 - Do ONE task at a time. Stay within its "Files to touch".
