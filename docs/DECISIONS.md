@@ -1,4 +1,5 @@
 # Decisions log (append: date, decision, why)
+
 - D1: Express 5 + TypeScript. Async handler errors propagate automatically; simple, widely known.
 - D2: `pg` + plain SQL migrations (no ORM). Schema design is graded; explicit SQL is easy to explain and agent-friendly.
 - D3: SSE over WebSockets. One-way server->client is all we need; works over plain HTTP; auto-reconnect built in.
@@ -10,3 +11,9 @@
 - D9: Book endpoints return 404 instead of 403 when an author requests a book owned by another author to prevent resource existence enumeration.
 - D10: Author-facing ticket responses strictly omit internal and AI triage metadata (category, priority, AI fields, internal notes) and return 404 for tickets belonging to other authors.
 - D11: SLA thresholds defined by priority (Critical: 24h, High: 48h, Medium: 96h, Low: 168h; null priority defaults to Medium). A ticket is flagged as isOverdue when unresolved ('Open' or 'In Progress') and its age exceeds its SLA limit.
+- D12: Model = gemini-3.5-flash-lite (free tier). Measured with a one-word ping: 2.6s and 3.5s, 0 thinking tokens.
+  gemini-3.5-flash rejected: 15-27s latency and thinking tokens consumed the output budget, returning empty text.
+  gemini-3.1-flash-lite kept as an alternative (one 19.9s outlier in two runs). Triage and short drafts do not need
+  deep reasoning, so a lite model is the right cost/latency trade-off. Free tier may use prompts to improve Google's
+  models, so only the synthetic sample data is ever sent.
+- D13: Rate limiter fails fast with sliding-window per-minute (AI_RPM_LIMIT) and per-day (AI_DAILY_LIMIT) caps. If a slot frees within 10s, it waits; otherwise throws AIUnavailableError('rate_limited') immediately rather than maintaining an unbounded queue, triggering graceful fallback and preserving responsiveness.

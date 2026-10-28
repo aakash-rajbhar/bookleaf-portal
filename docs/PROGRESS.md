@@ -11,7 +11,7 @@
 | T06 | Tickets: author create/list/get | done |
 | T07 | SSE hub + /events | done |
 | T08 | Admin ticket endpoints (queue filters, patch, notes, reply) | done |
-| T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | todo |
+| T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | done |
 | T10 | AI: triage (classify+priority) + fallback classifier + usage log | todo |
 | T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | todo |
 | T12 | Frontend scaffold + author portal | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T07 complete (implemented in-memory `sseHub` keyed by `author:<authorId>` and `admins`, short-lived 60s stream tokens at `POST /events/token`, `authenticateStream` on `GET /events`, mutual token rejection between stream and login JWTs, minimal `{type, ticketId}` event payloads, 25s heartbeat pings, clean unsubscription on disconnect; integrated real event emission in `ticketEvents.ts`, `ticketService.ts`, and `adminTicketService.ts`).
-- Not done: T09 AI provider abstraction.
-- Next: T09 (`docs/tasks/T09-ai-provider.md`).
+- Done: T09 complete (implemented `LLMProvider` interface with `generateJSON` and `generateText`, `GeminiProvider` using `@google/genai` with lazy key validation, retry on 5xx/timeout, fallback model support, token usage reporting including thinking tokens, error sanitization to prevent API key leakage, `MockProvider` with deterministic keyword response and `AI_MOCK_FAILURE` modes, sliding-window `RateLimiter` with RPM and UTC daily caps, migration `002_allow_smoke_task.sql` and `logAiCall` telemetry helper, and `scripts/ai-smoke.ts`).
+- Not done: T10 AI triage.
+- Next: T10 (`docs/tasks/T10-ai-triage.md`).
 - Known bugs: none.

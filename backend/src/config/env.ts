@@ -10,10 +10,25 @@ const schema = z.object({
   JWT_EXPIRES_IN: z.string().default('8h'),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   AI_PROVIDER: z.enum(['gemini', 'mock']).default('mock'),
-  GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
-  AI_RPM_LIMIT: z.coerce.number().default(10),
-  AI_TIMEOUT_MS: z.coerce.number().default(15000),
+  GEMINI_API_KEY: z
+    .string()
+    .optional()
+    .transform((val) => (val === '' || val === 'API_KEY_ADDED' ? undefined : val)),
+  GEMINI_MODEL: z.string().default('gemini-3.5-flash-lite'),
+  GEMINI_FALLBACK_MODEL: z
+    .string()
+    .optional()
+    .transform((val) => (val === '' ? undefined : val)),
+  AI_RPM_LIMIT: z.coerce.number().default(5),
+  AI_DAILY_LIMIT: z.coerce.number().default(200),
+  AI_TIMEOUT_MS: z.coerce.number().default(20000),
+  AI_MOCK_FAILURE: z
+    .enum(['none', 'always', 'rate_limit', 'empty', 'invalid_json'])
+    .default('none'),
+  GEMINI_THINKING_BUDGET: z.preprocess(
+    (val) => (val === '' || val === undefined ? undefined : val),
+    z.coerce.number().optional()
+  ),
 });
 
 const parsed = schema.safeParse(process.env);
