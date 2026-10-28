@@ -9,6 +9,13 @@ import type {
   AdminTicketsQuery,
   AdminTicketListResponse,
   AdminTicketDetail,
+  PatchTicketInput,
+  ReplyTicketInput,
+  AddNoteInput,
+  RetryTriageResponse,
+  DraftResponse,
+  AdminInternalNote,
+  TicketMessage,
 } from './types';
 
 const TOKEN_KEY = 'bookleaf_auth_token';
@@ -176,6 +183,16 @@ export const api = {
         return api.get<AdminTicketListResponse>(`/admin/tickets${qs ? `?${qs}` : ''}`);
       },
       getById: (id: string) => api.get<AdminTicketDetail>(`/admin/tickets/${id}`),
+      patch: (id: string, updates: PatchTicketInput) =>
+        api.patch<AdminTicketDetail>(`/admin/tickets/${id}`, updates),
+      reply: (id: string, data: ReplyTicketInput) =>
+        api.post<TicketMessage>(`/admin/tickets/${id}/reply`, data),
+      addNote: (id: string, data: AddNoteInput) =>
+        api.post<AdminInternalNote>(`/admin/tickets/${id}/notes`, data),
+      retryTriage: (id: string) =>
+        api.post<RetryTriageResponse>(`/admin/tickets/${id}/triage`),
+      generateDraft: (id: string, options: { regenerate?: boolean } = {}) =>
+        api.post<DraftResponse>(`/admin/tickets/${id}/draft`, options),
     },
   },
 };

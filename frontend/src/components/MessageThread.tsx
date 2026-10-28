@@ -8,9 +8,22 @@ interface MessageThreadProps {
     authorName?: string;
   };
   messages: TicketMessage[];
+  viewerRole?: 'author' | 'admin';
+  authorName?: string;
+  adminName?: string;
 }
 
-export function MessageThread({ originalQuery, messages }: MessageThreadProps) {
+export function MessageThread({
+  originalQuery,
+  messages,
+  viewerRole = 'author',
+  authorName,
+  adminName,
+}: MessageThreadProps) {
+  const isAdmin = viewerRole === 'admin';
+  const effectiveAuthorName = authorName || originalQuery.authorName || 'Author';
+  const effectiveAdminName = adminName || 'Support Agent';
+
   return (
     <div className="space-y-6">
       {/* 1. Original author query (chronologically first message) */}
@@ -22,7 +35,7 @@ export function MessageThread({ originalQuery, messages }: MessageThreadProps) {
             </div>
             <div>
               <span className="text-xs font-bold text-stone-800">
-                {originalQuery.authorName ? `${originalQuery.authorName} (You)` : 'You'}
+                {isAdmin ? effectiveAuthorName : originalQuery.authorName ? `${originalQuery.authorName} (You)` : 'You'}
               </span>
               <span className="text-[11px] text-stone-400 ml-2 font-medium">Original Query</span>
             </div>
@@ -83,7 +96,13 @@ export function MessageThread({ originalQuery, messages }: MessageThreadProps) {
                       {isSupport ? '🍃' : '👤'}
                     </span>
                     <span className="font-bold text-stone-800">
-                      {isSupport ? 'BookLeaf Support' : 'You'}
+                      {isSupport
+                        ? isAdmin
+                          ? effectiveAdminName
+                          : 'BookLeaf Support'
+                        : isAdmin
+                          ? effectiveAuthorName
+                          : 'You'}
                     </span>
                     {isSupport && (
                       <span className="text-[10px] font-semibold uppercase tracking-wider bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">
@@ -115,10 +134,14 @@ export function MessageThread({ originalQuery, messages }: MessageThreadProps) {
         <div className="rounded-xl border border-dashed border-stone-300 bg-stone-50/60 p-6 text-center text-sm text-stone-500">
           <span className="text-2xl block mb-2">⏳</span>
           <p className="font-semibold text-stone-800">
-            We have received your query. Our team will reply here.
+            {isAdmin
+              ? 'No replies sent yet.'
+              : 'We have received your query. Our team will reply here.'}
           </p>
           <p className="text-xs text-stone-500 mt-1">
-            Responses appear automatically in real time without having to refresh the page.
+            {isAdmin
+              ? 'Use the AI draft editor below to compose and send a reply.'
+              : 'Responses appear automatically in real time without having to refresh the page.'}
           </p>
         </div>
       )}

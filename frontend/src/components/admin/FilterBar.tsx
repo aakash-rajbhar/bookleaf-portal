@@ -1,5 +1,12 @@
 import { useState, useEffect, type ChangeEvent } from 'react';
-import type { TicketStatus, TicketCategory, TicketPriority } from '../../api/types';
+import {
+  type TicketStatus,
+  type TicketCategory,
+  type TicketPriority,
+  TICKET_CATEGORIES,
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+} from '../../api/types';
 
 export interface FilterValues {
   status?: TicketStatus | '';
@@ -18,19 +25,6 @@ interface FilterBarProps {
   onReset: () => void;
   isLoading?: boolean;
 }
-
-const CATEGORIES: TicketCategory[] = [
-  'Royalty & Payments',
-  'Book Availability',
-  'ISBN & Metadata',
-  'Cover & Interior Formatting',
-  'Author Copies',
-  'General Query',
-];
-
-const PRIORITIES: TicketPriority[] = ['Critical', 'High', 'Medium', 'Low'];
-
-const STATUSES: TicketStatus[] = ['Open', 'In Progress', 'Resolved', 'Closed'];
 
 export function FilterBar({ values, onChange, onReset, isLoading }: FilterBarProps) {
   // Local state for debounced search input
@@ -108,7 +102,7 @@ export function FilterBar({ values, onChange, onReset, isLoading }: FilterBarPro
             className="block w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-xs text-stone-800 focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
           >
             <option value="">Status: All</option>
-            {STATUSES.map((s) => (
+            {TICKET_STATUSES.map((s) => (
               <option key={s} value={s}>
                 Status: {s}
               </option>
@@ -125,7 +119,7 @@ export function FilterBar({ values, onChange, onReset, isLoading }: FilterBarPro
             className="block w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-xs text-stone-800 focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
           >
             <option value="">Priority: All</option>
-            {PRIORITIES.map((p) => (
+            {TICKET_PRIORITIES.map((p) => (
               <option key={p} value={p}>
                 Priority: {p}
               </option>
@@ -142,7 +136,7 @@ export function FilterBar({ values, onChange, onReset, isLoading }: FilterBarPro
             className="block w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-xs text-stone-800 focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
           >
             <option value="">Category: All</option>
-            {CATEGORIES.map((c) => (
+            {TICKET_CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 Category: {c}
               </option>

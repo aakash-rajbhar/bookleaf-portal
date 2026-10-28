@@ -18,16 +18,17 @@
 | T12b | Author books + submit query | done |
 | T12c | Author tickets with live updates | done |
 | T13a | Admin ticket queue | done |
-| T13b | Admin ticket detail with AI draft editor | todo |
+| T13b | Admin ticket detail with AI draft editor | done |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
-- Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T13a complete (built `src/pages/admin/Queue.tsx` with responsive data table, urgency ranking, overdue styling, and summary strip; built `src/components/admin/FilterBar.tsx` with debounced search, status, category, priority, assignment, date range, and sort controls synchronized with URL query params; built `src/components/admin/{PriorityBadge,CategoryBadge,AiSourceBadge,TicketRow}.tsx`; built `src/components/Pagination.tsx` with limit 25 and counter; added `admin.tickets.list` to `src/api/client.ts` and `AdminTicketsQuery` to `src/api/types.ts`; updated `Layout.tsx` for admin navigation; created `/admin/tickets/:id` placeholder; integrated `useTicketStream` for in-place live queue updates; logged D21 in `docs/DECISIONS.md`).
-- Not done: T13b (Admin ticket detail with AI draft editor).
-- Next: T13b (`docs/tasks/T13b-admin-ticket-detail.md`).
+- Agent: Antigravity (Gemini)
+- Done: T13b complete (implemented admin ticket detail view with two-column responsive layout; built `src/pages/admin/TicketDetail.tsx`; built `src/components/admin/DraftEditor.tsx` with StrictMode-safe single-invocation draft generation, unedited/template review hints, regenerate with confirm, reset to draft, resolve-on-send, character count, and isolated state protected from live refetches; built `src/components/admin/TicketControls.tsx` for status/category/priority PATCH and me/unassign assignment with inline error handling; built `src/components/admin/AiTriagePanel.tsx` with classifying status and retry button calling `POST /triage`; built `src/components/admin/AuthorBookPanel.tsx` displaying author profile, publication status, sales, and highlighted pending unpaid royalties with em-dash fallbacks; built `src/components/admin/InternalNotes.tsx` with distinct yellow styling and author-hidden disclaimer; extended `MessageThread.tsx` with admin viewer perspective; wired `useTicketStream` for live SSE updates; logged D22 in `docs/DECISIONS.md`).
+- Not done: T14 (Deploy) & T15 (Docs).
+- Next: T14 (`docs/tasks/T14-deploy.md`).
 - Known bugs: none.
+
 
 
 

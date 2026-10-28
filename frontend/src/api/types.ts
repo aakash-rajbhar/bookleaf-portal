@@ -17,17 +17,35 @@ export interface CurrentUserResponse {
   user: User;
 }
 
-export type TicketStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+export const TICKET_STATUSES = [
+  'Open',
+  'In Progress',
+  'Resolved',
+  'Closed',
+] as const;
 
-export type TicketCategory =
-  | 'Royalty & Payments'
-  | 'Book Availability'
-  | 'ISBN & Metadata'
-  | 'Cover & Interior Formatting'
-  | 'Author Copies'
-  | 'General Query';
+export type TicketStatus = (typeof TICKET_STATUSES)[number];
 
-export type TicketPriority = 'Critical' | 'High' | 'Medium' | 'Low';
+export const TICKET_CATEGORIES = [
+  'Royalty & Payments',
+  'ISBN & Metadata',
+  'Printing & Quality',
+  'Distribution',
+  'Production Updates',
+  'General',
+] as const;
+
+export type TicketCategory = (typeof TICKET_CATEGORIES)[number];
+
+export const TICKET_PRIORITIES = [
+  'Critical',
+  'High',
+  'Medium',
+  'Low',
+] as const;
+
+export type TicketPriority = (typeof TICKET_PRIORITIES)[number];
+
 
 export interface Book {
   id: string;
@@ -169,6 +187,36 @@ export interface AdminTicketDetail {
   messages: TicketMessage[];
   internalNotes: AdminInternalNote[];
   latestDraft: AdminDraft | null;
+}
+
+export interface DraftResponse {
+  text: string;
+  source: 'ai' | 'template';
+  model: string | null;
+  createdAt: string;
+  cached: boolean;
+  reason?: string;
+}
+
+export interface PatchTicketInput {
+  status?: TicketStatus;
+  category?: TicketCategory;
+  priority?: TicketPriority;
+  assignedTo?: 'me' | string | null;
+}
+
+export interface ReplyTicketInput {
+  body: string;
+  markResolved?: boolean;
+}
+
+export interface AddNoteInput {
+  body: string;
+}
+
+export interface RetryTriageResponse {
+  message: string;
+  ticketId: string;
 }
 
 export interface ApiErrorDetail {
