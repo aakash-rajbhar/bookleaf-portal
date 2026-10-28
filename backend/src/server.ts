@@ -1,0 +1,6 @@
+import { createApp } from './app';
+import { env } from './config/env';
+
+createApp().listen(env.PORT, () => {
+  console.log(`BookLeaf API listening on :${env.PORT} (${env.NODE_ENV}, AI=${env.AI_PROVIDER})`);
+});
