@@ -7,7 +7,7 @@
 | T02 | DB pool + SQL migrations (schema from DATA_MODEL.md) | done |
 | T03 | Seed script (JSON -> authors/books, users, admins) | done |
 | T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | done |
-| T05 | Books endpoints with ownership rules | todo |
+| T05 | Books endpoints with ownership rules | done |
 | T06 | Tickets: author create/list/get | todo |
 | T07 | SSE hub + /events | todo |
 | T08 | Admin ticket endpoints (queue filters, patch, notes, reply) | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T04 complete (implemented auth service with dummy bcrypt hash timing defense, auth controller with zod validation, pinned HS256 JWT sign & verify, authenticate middleware, requireRole middleware, req.user typing, wired in routes/index.ts, added temporary GET /api/v1/_debug/admin-only route with TODO to remove in T08; verified all acceptance criteria).
-- Not done: T05 books endpoints.
-- Next: T05 (`docs/tasks/T05-books.md`).
+- Done: T05 complete (implemented books route, controller, service with parameterized SQL, mappers preserving SQL nulls and computing `isInProduction`, ownership enforcement returning 404 for non-owned books, registered after `authenticate`; verified all acceptance criteria).
+- Not done: T06 author tickets.
+- Next: T06 (`docs/tasks/T06-tickets-author.md`).
 - Known bugs: none.

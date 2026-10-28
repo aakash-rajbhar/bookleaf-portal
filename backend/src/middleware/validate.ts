@@ -19,10 +19,20 @@ export function validate(schemas: ValidationSchemas) {
         req.body = await schemas.body.parseAsync(req.body);
       }
       if (schemas.query) {
-        req.query = await schemas.query.parseAsync(req.query);
+        const parsed = await schemas.query.parseAsync(req.query);
+        try {
+          req.query = parsed;
+        } catch {
+          Object.defineProperty(req, 'query', { value: parsed, writable: true, configurable: true });
+        }
       }
       if (schemas.params) {
-        req.params = await schemas.params.parseAsync(req.params);
+        const parsed = await schemas.params.parseAsync(req.params);
+        try {
+          req.params = parsed;
+        } catch {
+          Object.defineProperty(req, 'params', { value: parsed, writable: true, configurable: true });
+        }
       }
       next();
     } catch (err) {

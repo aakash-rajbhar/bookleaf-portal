@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { healthRouter } from './health';
 import { authRouter } from './auth';
+import { booksRouter } from './books';
 import { authenticate } from '../middleware/authenticate';
 import { requireRole } from '../middleware/requireRole';
 
@@ -13,6 +14,8 @@ apiRouter.use('/auth', authRouter);
 
 // Protected routes: all routes registered below require a valid JWT
 apiRouter.use(authenticate);
+
+apiRouter.use('/books', booksRouter);
 
 // Temporary debug route to test role guard
 // TODO: remove in T08
