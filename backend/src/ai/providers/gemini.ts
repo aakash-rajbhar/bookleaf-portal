@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { LLMProvider, Usage } from '../types';
-import { AIUnavailableError, AIUnavailableReason } from '../errors';
+import { AIUnavailableError } from '../errors';
+import { rateLimiter } from '../rateLimiter';
 import { env } from '../../config/env';
 
 /** Internal helper error used to distinguish JSON/Zod parse issues for retry logic */
@@ -58,8 +59,10 @@ export class GeminiProvider implements LLMProvider {
 
     if (status === 429) {
       if (msg.includes('quota') || msg.includes('resource_exhausted') || msg.includes('exceeded')) {
+        rateLimiter.setCooldown('quota', 3600_000); // 1h cooldown
         return new AIUnavailableError('quota', 'AI quota exhausted');
       }
+      rateLimiter.setCooldown('rate_limited', 60_000); // 60s cooldown
       return new AIUnavailableError('rate_limited', 'AI request rate limited (429)');
     }
 
@@ -86,6 +89,11 @@ export class GeminiProvider implements LLMProvider {
     await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
+  /**
+   * Invokes the Gemini API for a single attempt.
+   * Acquires a rate-limit slot immediately before dispatching the real HTTP request.
+   * Time spent waiting for rate limiting counts against the shared deadline.
+   */
   private async invokeModel(
     modelName: string,
     req: {
@@ -95,11 +103,32 @@ export class GeminiProvider implements LLMProvider {
       temperature: number;
       isJson: boolean;
       jsonSchema?: object;
-    }
+    },
+    deadline: number
   ): Promise<{ text: string; usage: Usage }> {
+    const remainingBeforeAcquire = deadline - Date.now();
+    if (remainingBeforeAcquire <= 0) {
+      throw new AIUnavailableError(
+        'timeout',
+        `AI total deadline of ${env.AI_TOTAL_TIMEOUT_MS}ms exceeded`
+      );
+    }
+
+    // Rate-limit every real HTTP call (including retries and fallback attempts)
+    await rateLimiter.acquire();
+
+    const remainingAfterAcquire = deadline - Date.now();
+    if (remainingAfterAcquire <= 0) {
+      throw new AIUnavailableError(
+        'timeout',
+        `AI total deadline exceeded while waiting for rate limit slot`
+      );
+    }
+
+    const attemptTimeoutMs = Math.min(env.AI_TIMEOUT_MS, remainingAfterAcquire);
     const ai = this.getClient();
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), env.AI_TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), attemptTimeoutMs);
     const startMs = Date.now();
 
     try {
@@ -134,10 +163,11 @@ export class GeminiProvider implements LLMProvider {
       const candidate = response.candidates?.[0];
       const finishReason = candidate?.finishReason;
 
-      if (finishReason === 'MAX_TOKENS' || finishReason === 'SAFETY') {
+      // Treat any finishReason other than STOP (when present) as invalid_output
+      if (finishReason && finishReason !== 'STOP') {
         throw new AIUnavailableError(
           'invalid_output',
-          `Generation halted due to finish reason: ${finishReason}`
+          `Generation stopped with finish reason: ${finishReason}`
         );
       }
 
@@ -158,7 +188,10 @@ export class GeminiProvider implements LLMProvider {
       return { text, usage };
     } catch (err) {
       if (controller.signal.aborted) {
-        throw new AIUnavailableError('timeout', `AI call timed out after ${env.AI_TIMEOUT_MS}ms`);
+        throw new AIUnavailableError(
+          'timeout',
+          `AI attempt timed out after ${attemptTimeoutMs}ms`
+        );
       }
       throw this.mapError(err);
     } finally {
@@ -166,6 +199,11 @@ export class GeminiProvider implements LLMProvider {
     }
   }
 
+  /**
+   * Executes a model call with retry policy:
+   * - Never retries on 'timeout'.
+   * - Retries once on 'upstream' (5xx / network error) provided >= 5000ms remains before deadline.
+   */
   private async executeWithRetries(
     modelName: string,
     req: {
@@ -175,40 +213,41 @@ export class GeminiProvider implements LLMProvider {
       temperature: number;
       isJson: boolean;
       jsonSchema?: object;
-    }
+    },
+    deadline: number
   ): Promise<{ text: string; usage: Usage }> {
-    let lastError: unknown;
+    try {
+      return await this.invokeModel(modelName, req, deadline);
+    } catch (err) {
+      const mapped = this.mapError(err);
 
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        return await this.invokeModel(modelName, req);
-      } catch (err) {
-        lastError = err;
-        const mapped = this.mapError(err);
-
-        // No retry on rate_limited or quota or not_configured or invalid_output
-        if (mapped.reason === 'rate_limited' || mapped.reason === 'quota' || mapped.reason === 'not_configured') {
-          throw mapped;
-        }
-
-        // Retry once on 5xx (upstream) or timeout
-        if (attempt === 1 && (mapped.reason === 'upstream' || mapped.reason === 'timeout')) {
-          await this.sleepJitter(500);
-          continue;
-        }
-
+      // Do NOT retry on timeout, rate_limited, quota, not_configured, or invalid_output
+      if (mapped.reason !== 'upstream') {
         throw mapped;
       }
-    }
 
-    throw this.mapError(lastError);
+      // Do not start a retry if less than 5000ms remains before the total deadline
+      const remaining = deadline - Date.now();
+      if (remaining < 5000) {
+        throw mapped;
+      }
+
+      await this.sleepJitter(500);
+      return await this.invokeModel(modelName, req, deadline);
+    }
   }
 
+  /**
+   * Wraps call with total deadline across retries and optional fallback model.
+   * Fallback is eligible for timeout, rate_limited, upstream, and quota.
+   */
   private async runWithFallback<R>(
-    fn: (model: string) => Promise<R>
+    fn: (model: string, deadline: number) => Promise<R>
   ): Promise<R> {
+    const deadline = Date.now() + env.AI_TOTAL_TIMEOUT_MS;
+
     try {
-      return await fn(this.model);
+      return await fn(this.model, deadline);
     } catch (err) {
       const mapped = this.mapError(err);
       const fallbackModel = env.GEMINI_FALLBACK_MODEL;
@@ -216,13 +255,20 @@ export class GeminiProvider implements LLMProvider {
       const isEligibleForFallback =
         fallbackModel &&
         fallbackModel !== this.model &&
-        (mapped.reason === 'timeout' || mapped.reason === 'rate_limited' || mapped.reason === 'upstream');
+        (mapped.reason === 'timeout' ||
+          mapped.reason === 'rate_limited' ||
+          mapped.reason === 'upstream' ||
+          mapped.reason === 'quota');
 
       if (isEligibleForFallback) {
-        try {
-          return await fn(fallbackModel);
-        } catch (fallbackErr) {
-          throw this.mapError(fallbackErr);
+        const remaining = deadline - Date.now();
+        // Do not attempt fallback if less than 5000ms remains
+        if (remaining >= 5000) {
+          try {
+            return await fn(fallbackModel, deadline);
+          } catch (fallbackErr) {
+            throw this.mapError(fallbackErr);
+          }
         }
       }
 
@@ -235,14 +281,18 @@ export class GeminiProvider implements LLMProvider {
     prompt: string;
     maxOutputTokens: number;
   }): Promise<{ text: string; usage: Usage }> {
-    return this.runWithFallback(async (model) => {
-      return this.executeWithRetries(model, {
-        system: req.system,
-        prompt: req.prompt,
-        maxOutputTokens: req.maxOutputTokens,
-        temperature: 0.5,
-        isJson: false,
-      });
+    return this.runWithFallback(async (model, deadline) => {
+      return this.executeWithRetries(
+        model,
+        {
+          system: req.system,
+          prompt: req.prompt,
+          maxOutputTokens: req.maxOutputTokens,
+          temperature: 0.5,
+          isJson: false,
+        },
+        deadline
+      );
     });
   }
 
@@ -253,47 +303,57 @@ export class GeminiProvider implements LLMProvider {
     jsonSchema: object;
     maxOutputTokens: number;
   }): Promise<{ data: T; usage: Usage }> {
-    return this.runWithFallback(async (model) => {
-      let lastErr: unknown;
-
-      for (let attempt = 1; attempt <= 2; attempt++) {
-        try {
-          const res = await this.executeWithRetries(model, {
+    return this.runWithFallback(async (model, deadline) => {
+      const executeAndValidate = async () => {
+        const res = await this.executeWithRetries(
+          model,
+          {
             system: req.system,
             prompt: req.prompt,
             maxOutputTokens: req.maxOutputTokens,
             temperature: 0.2,
             isJson: true,
             jsonSchema: req.jsonSchema,
-          });
+          },
+          deadline
+        );
 
-          let parsedRaw: unknown;
-          try {
-            parsedRaw = JSON.parse(res.text);
-          } catch (jsonErr) {
-            throw new SchemaOrParseError('Invalid JSON format returned by model');
-          }
-
-          const zodRes = req.schema.safeParse(parsedRaw);
-          if (!zodRes.success) {
-            throw new SchemaOrParseError('Model output failed Zod schema validation');
-          }
-
-          return { data: zodRes.data, usage: res.usage };
-        } catch (err) {
-          lastErr = err;
-          if (err instanceof SchemaOrParseError) {
-            if (attempt === 1) {
-              await this.sleepJitter(500);
-              continue;
-            }
-            throw new AIUnavailableError('invalid_output', err.message);
-          }
-          throw this.mapError(err);
+        let parsedRaw: unknown;
+        try {
+          parsedRaw = JSON.parse(res.text);
+        } catch (jsonErr) {
+          throw new SchemaOrParseError('Invalid JSON format returned by model');
         }
-      }
 
-      throw this.mapError(lastErr);
+        const zodRes = req.schema.safeParse(parsedRaw);
+        if (!zodRes.success) {
+          throw new SchemaOrParseError('Model output failed Zod schema validation');
+        }
+
+        return { data: zodRes.data, usage: res.usage };
+      };
+
+      try {
+        return await executeAndValidate();
+      } catch (err) {
+        if (err instanceof SchemaOrParseError) {
+          // Schema/parse retry must also respect the 5000ms deadline threshold
+          const remaining = deadline - Date.now();
+          if (remaining >= 5000) {
+            await this.sleepJitter(500);
+            try {
+              return await executeAndValidate();
+            } catch (retryErr) {
+              if (retryErr instanceof SchemaOrParseError) {
+                throw new AIUnavailableError('invalid_output', retryErr.message);
+              }
+              throw this.mapError(retryErr);
+            }
+          }
+          throw new AIUnavailableError('invalid_output', err.message);
+        }
+        throw this.mapError(err);
+      }
     });
   }
 }

@@ -22,6 +22,7 @@ const schema = z.object({
   AI_RPM_LIMIT: z.coerce.number().default(5),
   AI_DAILY_LIMIT: z.coerce.number().default(200),
   AI_TIMEOUT_MS: z.coerce.number().default(20000),
+  AI_TOTAL_TIMEOUT_MS: z.coerce.number().default(30000),
   AI_MOCK_FAILURE: z
     .enum(['none', 'always', 'rate_limit', 'empty', 'invalid_json'])
     .default('none'),

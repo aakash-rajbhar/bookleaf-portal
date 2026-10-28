@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T09 complete (implemented `LLMProvider` interface with `generateJSON` and `generateText`, `GeminiProvider` using `@google/genai` with lazy key validation, retry on 5xx/timeout, fallback model support, token usage reporting including thinking tokens, error sanitization to prevent API key leakage, `MockProvider` with deterministic keyword response and `AI_MOCK_FAILURE` modes, sliding-window `RateLimiter` with RPM and UTC daily caps, migration `002_allow_smoke_task.sql` and `logAiCall` telemetry helper, and `scripts/ai-smoke.ts`).
+- Done: T09 complete (implemented `LLMProvider` interface with `generateJSON` and `generateText`, `GeminiProvider` using `@google/genai` with lazy key validation, retry on 5xx/network error, fallback model support for timeout/rate_limit/quota/upstream, token usage reporting including thinking tokens, error sanitization to prevent API key leakage, `MockProvider` with deterministic keyword response and `AI_MOCK_FAILURE` modes, sliding-window `RateLimiter` with RPM/daily caps and 429 cooldowns, `AI_TOTAL_TIMEOUT_MS` deadline bounding total latency, per-request rate limiting inside `invokeModel`, migration `002_allow_smoke_task.sql`, `logAiCall` telemetry helper, and `scripts/ai-smoke.ts`).
 - Not done: T10 AI triage.
 - Next: T10 (`docs/tasks/T10-ai-triage.md`).
 - Known bugs: none.
