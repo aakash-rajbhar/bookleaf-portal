@@ -5,7 +5,7 @@
 |---|---|---|
 | T01 | Backend bootstrap: install, env validation, health route, error handler | done |
 | T02 | DB pool + SQL migrations (schema from DATA_MODEL.md) | done |
-| T03 | Seed script (JSON -> authors/books, users, admins) | todo |
+| T03 | Seed script (JSON -> authors/books, users, admins) | done |
 | T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | todo |
 | T05 | Books endpoints with ownership rules | todo |
 | T06 | Tickets: author create/list/get | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T01 verified, T02 complete (created `001_init.sql` schema and `scripts/migrate.ts` migration runner; tested double migration idempotency; verified all tables created; verified health check reports DB ok).
-- Not done: T03 seed script.
-- Next: T03 (`docs/tasks/T03-seed.md`).
+- Done: T03 complete (implemented `backend/scripts/seed.ts` running in a single transaction, idempotent upserts, precomputed bcrypt cost 10 hash, mapped null fields to SQL NULL, preserved UTF-8 titles like "Durga’s Daughters", verified counts: 10 authors, 18 books, 12 users, verified password check).
+- Not done: T04 auth & RBAC.
+- Next: T04 (`docs/tasks/T04-auth.md`).
 - Known bugs: none.
