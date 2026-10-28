@@ -19,15 +19,16 @@
 | T12c | Author tickets with live updates | done |
 | T13a | Admin ticket queue | done |
 | T13b | Admin ticket detail with AI draft editor | done |
-| T14 | Deploy (Neon + Render + Vercel) | todo |
+| T14 | Deploy prep + demo data (Render + Vercel) | done |
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
 - Agent: Antigravity (Gemini)
-- Done: T13b complete (implemented admin ticket detail view with two-column responsive layout; built `src/pages/admin/TicketDetail.tsx`; built `src/components/admin/DraftEditor.tsx` with StrictMode-safe single-invocation draft generation, unedited/template review hints, regenerate with confirm, reset to draft, resolve-on-send, character count, and isolated state protected from live refetches; built `src/components/admin/TicketControls.tsx` for status/category/priority PATCH and me/unassign assignment with inline error handling; built `src/components/admin/AiTriagePanel.tsx` with classifying status and retry button calling `POST /triage`; built `src/components/admin/AuthorBookPanel.tsx` displaying author profile, publication status, sales, and highlighted pending unpaid royalties with em-dash fallbacks; built `src/components/admin/InternalNotes.tsx` with distinct yellow styling and author-hidden disclaimer; extended `MessageThread.tsx` with admin viewer perspective; wired `useTicketStream` for live SSE updates; logged D22 in `docs/DECISIONS.md`).
-- Not done: T14 (Deploy) & T15 (Docs).
-- Next: T14 (`docs/tasks/T14-deploy.md`).
+- Done: T14 complete (fixed backend build with `backend/tsconfig.build.json` targeting `rootDir: "src"` and verified `npm run build && npm start` serves `/api/v1/health`; added `frontend/vercel.json` with SPA rewrite to prevent deep link 404s; created `backend/scripts/seed-demo.ts` with 7 idempotent demo tickets with fixed UUIDs and relative timestamps covering overdue SLA, fallback classification, replies, and internal notes; created `backend/scripts/reset-demo.ts` with `CONFIRM_RESET=yes` guard; verified `npm run seed:demo` idempotency; created `docs/DEPLOY.md` detailing architecture topology, environment variables, Render/Vercel configuration, post-deploy smoke tests, and cold starts; logged D23 in `docs/DECISIONS.md`).
+- Not done: T15 (README, API docs, 1-page write-up).
+- Next: T15 (`docs/tasks/T15-docs.md`).
 - Known bugs: none.
+
 
 
 
