@@ -30,7 +30,7 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
       algorithms: ['HS256'],
     }) as JwtPayload;
 
-    if (!payload.sub || !payload.role) {
+    if (!payload.sub || !payload.role || (payload as any).purpose === 'sse') {
       return next(AppError.unauthorized('Invalid authentication token'));
     }
 

@@ -1,6 +1,7 @@
 import { query } from '../db/pool';
 import { AppError } from '../utils/errors';
 import { triageQueue } from './triageQueue';
+import { publishTicketEvent } from './ticketEvents';
 import {
   toAuthorTicketResponse,
   type AuthorTicketResponse,
@@ -74,6 +75,13 @@ export class TicketService {
       await triageQueue.enqueue(ticket.id);
     } catch (err) {
       console.error(`Failed to enqueue ticket ${ticket.id} for triage:`, err);
+    }
+
+    // Notify admins via SSE
+    try {
+      publishTicketEvent({ admins: true }, { type: 'ticket.created', ticketId: ticket.id });
+    } catch (err) {
+      console.error(`Failed to publish ticket.created event for ${ticket.id}:`, err);
     }
 
     return toAuthorTicketResponse(ticket, []);

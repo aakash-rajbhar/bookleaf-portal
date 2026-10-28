@@ -9,7 +9,7 @@
 | T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | done |
 | T05 | Books endpoints with ownership rules | done |
 | T06 | Tickets: author create/list/get | done |
-| T07 | SSE hub + /events | todo |
+| T07 | SSE hub + /events | done |
 | T08 | Admin ticket endpoints (queue filters, patch, notes, reply) | done |
 | T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | todo |
 | T10 | AI: triage (classify+priority) + fallback classifier + usage log | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T08 complete (implemented admin ticket management: single source of truth in `constants/ticket.ts`, `services/ticketEvents.ts` stub, `services/adminTicketService.ts`, `controllers/adminTicketController.ts`, `routes/admin.ts`; urgency queue sorting with SLA overdue calculation, whitelist parameterized filtering, transactional PATCH overrides tracking admin source, transactional reply advancing Open tickets and setting assignee, internal notes isolation, removed temporary `_debug` route; verified all test scenarios).
-- Not done: T07 SSE hub + /events.
-- Next: T07 (`docs/tasks/T07-sse.md`).
+- Done: T07 complete (implemented in-memory `sseHub` keyed by `author:<authorId>` and `admins`, short-lived 60s stream tokens at `POST /events/token`, `authenticateStream` on `GET /events`, mutual token rejection between stream and login JWTs, minimal `{type, ticketId}` event payloads, 25s heartbeat pings, clean unsubscription on disconnect; integrated real event emission in `ticketEvents.ts`, `ticketService.ts`, and `adminTicketService.ts`).
+- Not done: T09 AI provider abstraction.
+- Next: T09 (`docs/tasks/T09-ai-provider.md`).
 - Known bugs: none.

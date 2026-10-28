@@ -1,20 +1,26 @@
+import { sseHub, type HubEvent } from '../sse/hub';
+
 export interface EventTarget {
   authorId?: string;
   admins?: boolean;
 }
 
-export interface TicketEvent {
-  type: string;
-  ticketId: string;
-}
+export type TicketEvent = HubEvent;
 
 /**
- * Publishes real-time ticket events to target streams.
- * Stub implementation: logs debug info; replaced with SSE hub broadcasting in T07.
+ * Publishes real-time ticket events to target streams via the SSE Hub:
+ * - authorId maps to "author:<authorId>" channel
+ * - admins maps to "admins" channel
  */
 export function publishTicketEvent(
   target: EventTarget,
   event: TicketEvent
 ): void {
-  console.debug('[TicketEvents Stub]', target, event);
+  if (target.authorId) {
+    sseHub.publish(`author:${target.authorId}`, event);
+  }
+
+  if (target.admins) {
+    sseHub.publish('admins', event);
+  }
 }

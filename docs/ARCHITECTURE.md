@@ -19,8 +19,8 @@ HTTP -> routes (wiring + middleware chain) -> controllers (parse req, call servi
 5. Status changes / overrides also emit SSE events (author only receives author-visible fields).
 
 ## SSE hub
-In-memory `Map<userId, Set<Response>>`. `publish(userId, event)` writes `event:`/`data:` frames. Heartbeat every 25s.
-Auth for SSE: EventSource cannot set headers, so accept a short-lived token via `?token=` (see DECISIONS.md).
+In-memory `Map<string, Set<Response>>` keyed by `author:<authorId>` or `admins`. `publish(key, event)` writes `event:`/`data:` frames with minimal payloads `{type, ticketId}` (clients refetch full data via the REST API). Heartbeat comment `: ping\n\n` every 25s; connections cleanly unsubscribe on close.
+Auth for SSE: EventSource cannot set headers; clients exchange their Bearer token for a 60-second single-purpose JWT (`purpose: 'sse'`) at `POST /events/token`, passed to `GET /events?token=...` (see DECISIONS.md).
 
 ## Roles
 `author` (users.author_id set) and `admin`. Ownership check lives in services (ticket.author_id === user.author_id) and returns 404 for foreign tickets (avoid leaking existence).

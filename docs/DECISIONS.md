@@ -2,7 +2,7 @@
 - D1: Express 5 + TypeScript. Async handler errors propagate automatically; simple, widely known.
 - D2: `pg` + plain SQL migrations (no ORM). Schema design is graded; explicit SQL is easy to explain and agent-friendly.
 - D3: SSE over WebSockets. One-way server->client is all we need; works over plain HTTP; auto-reconnect built in.
-- D4: SSE auth via `?token=` query param because EventSource can't set headers (acceptable trade-off; short-lived JWT in production would be better).
+- D4: SSE auth via short-lived stream tokens: browsers' EventSource cannot send Authorization headers. Instead of exposing long-lived login tokens in URLs, clients exchange their Bearer token at POST /events/token for a 60-second single-purpose JWT ({purpose: 'sse'}). GET /events verifies purpose === 'sse' and rejects regular login tokens, while normal authenticate rejects stream tokens.
 - D5: Gemini free tier behind LLMProvider interface + MockProvider so quota never blocks dev or the live demo.
 - D6: AI triage runs async after ticket insert, so ticket creation never depends on the AI.
 - D7: Plain SQL migrations executed within transactions and tracked via `schema_migrations` table for atomic, idempotent execution without heavy third-party migration tools.
