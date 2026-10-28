@@ -16,16 +16,17 @@
 | T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | done |
 | T12a | Frontend scaffold, auth, routing, and api client | done |
 | T12b | Author books + submit query | done |
-| T12c | Author tickets with live updates | todo |
+| T12c | Author tickets with live updates | done |
 | T13 | Admin portal | todo |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T12b complete (built `src/lib/format.ts` with `en-IN` currency, dates, numbers, and em dash `—` fallback; built `src/components/StatusBadge.tsx` with green published and amber in-production styling; built `src/components/BookCard.tsx` with production banner, hidden royalty block when in production, pending royalty payout notes, metadata, and quick query link; updated `src/pages/author/Books.tsx` with loading, error retry, empty states, and quick stats bar; built `src/pages/author/SubmitQuery.tsx` with book dropdown including General and in-production titles, live character counters, client/server validation display, demo attachment notice, double-submit prevention, and seamless redirect to `/tickets/:id` with success banner; updated `Login.tsx` with exact demo author accounts; logged D19 in `docs/DECISIONS.md`).
-- Not done: T12c (Author tickets with live updates).
-- Next: T12c (`docs/tasks/T12c-author-tickets-live.md`).
+- Done: T12c complete (added `formatRelativeTime` and `formatDateTime` helpers to `src/lib/format.ts`; built `src/components/TicketStatusBadge.tsx` with Open=blue, In Progress=amber, Resolved=green, Closed=grey; built `src/components/MessageThread.tsx` rendering author original query and chronological replies with official BookLeaf Support badge and pre-wrap line breaks; built `src/hooks/useTicketStream.ts` and `src/components/StreamStatusIndicator.tsx` supporting 60s stream token acquisition, auto token-refresh on reconnect with exponential backoff, 30s polling fallback while disconnected, document visibility refetch, and StrictMode duplicate-connection protection; built `src/pages/author/Tickets.tsx` with unread dot indicators via localStorage, live stream updates, and empty/error states; built `src/pages/author/TicketDetail.tsx` with one-off submission notice clearance from history state, read tracking, friendly 404 handling, and live updates; logged D20 in `docs/DECISIONS.md`).
+- Not done: T13 (Admin portal).
+- Next: T13 (`docs/tasks/T13-admin-portal.md` or next task).
 - Known bugs: none.
+
 
 

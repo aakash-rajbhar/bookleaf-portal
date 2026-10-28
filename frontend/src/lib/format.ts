@@ -12,6 +12,15 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
 });
 
+const dateTimeFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: true,
+});
+
 /**
  * Formats a numeric money amount in Indian Rupees (₹).
  * Null or undefined values return an em dash ('—').
@@ -57,6 +66,80 @@ export function formatDate(dateStr: string | null | undefined): string {
       return '—';
     }
     return dateFormatter.format(d);
+  } catch {
+    return '—';
+  }
+}
+
+/**
+ * Formats date and time into a full readable timestamp (e.g. '15 Oct 2025, 04:30 PM') for tooltips.
+ */
+export function formatDateTime(dateStr: string | null | undefined): string {
+  if (!dateStr || typeof dateStr !== 'string' || dateStr.trim() === '') {
+    return '—';
+  }
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    return dateTimeFormatter.format(d);
+  } catch {
+    return '—';
+  }
+}
+
+/**
+ * Formats a timestamp into human-readable relative time (e.g. 'just now', '5 minutes ago', '2 hours ago', 'yesterday').
+ * Returns an em dash ('—') for invalid or empty inputs.
+ */
+export function formatRelativeTime(dateStr: string | null | undefined): string {
+  if (!dateStr || typeof dateStr !== 'string' || dateStr.trim() === '') {
+    return '—';
+  }
+
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+
+    const now = Date.now();
+    const diffMs = now - d.getTime();
+
+    // Future timestamp safeguard
+    if (diffMs < 0) {
+      return 'just now';
+    }
+
+    const diffSeconds = Math.round(diffMs / 1000);
+    const diffMinutes = Math.round(diffSeconds / 60);
+    const diffHours = Math.round(diffMinutes / 60);
+    const diffDays = Math.round(diffHours / 24);
+
+    if (diffSeconds < 45) {
+      return 'just now';
+    }
+    if (diffMinutes < 2) {
+      return '1 minute ago';
+    }
+    if (diffMinutes < 60) {
+      return `${diffMinutes} minutes ago`;
+    }
+    if (diffHours < 2) {
+      return '1 hour ago';
+    }
+    if (diffHours < 24) {
+      return `${diffHours} hours ago`;
+    }
+    if (diffDays === 1) {
+      return 'yesterday';
+    }
+    if (diffDays < 7) {
+      return `${diffDays} days ago`;
+    }
+    if (diffDays < 30) {
+      const weeks = Math.round(diffDays / 7);
+      return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+    }
+
+    return formatDate(dateStr);
   } catch {
     return '—';
   }

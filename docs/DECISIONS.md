@@ -27,5 +27,11 @@
   2) When pending royalties are positive on a book that has never had a payout (`lastPayoutDate` is null), a clear explanatory notice is shown ("No payout yet. Royalties are calculated quarterly and paid within 45 days of quarter end") rather than presenting an overdue state.
   3) Query submission form allows selecting in-production titles (as authors often ask about them) and supports "General / Account Level" queries by omitting `bookId`.
   4) Client-side validation mirrors backend Zod rules with live character counters, while preserving input state and field-level error mapping from server validation responses.
+- D20: Real-time ticket updates via Server-Sent Events (`useTicketStream`):
+  1) Token refresh on reconnect: Because browser `EventSource` cannot send custom headers and short-lived stream tokens expire in 60s (D4), automatic browser reconnection would reuse the expired token and fail with 401. `useTicketStream` explicitly traps connection errors, closes the stale `EventSource` instance immediately, and fetches a brand new stream token from `POST /events/token` using exponential backoff (1s, 2s, 4s... max 30s + jitter).
+  2) Robust fallback polling: While the stream is disconnected or reconnecting (`status !== 'live'`), an interval polls the active page query every 30 seconds (`type: 'poll'`), ensuring the author never misses replies even if SSE is temporarily blocked or down. Polling immediately halts as soon as the stream becomes live.
+  3) StrictMode & Lifecycle hygiene: Uses a cancelled flag and abort pattern to guarantee that React StrictMode double-mounting never opens duplicate streams. The callback reference is retained in a ref (`onEventRef`) so stream connections are not torn down on every component re-render.
+  4) Seamless in-place updates: Real-time refetches update data without flashing full-page loading spinners, and monotonic request sequence IDs ignore out-of-order responses.
+
 
 
