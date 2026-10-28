@@ -99,6 +99,11 @@ export class AdminTicketController {
     );
     res.status(201).json(note);
   }
+
+  async retryTriage(req: Request, res: Response) {
+    const result = await adminTicketService.retryTriage(req.params.id as string);
+    res.status(202).json(result);
+  }
 }
 
 export const adminTicketController = new AdminTicketController();

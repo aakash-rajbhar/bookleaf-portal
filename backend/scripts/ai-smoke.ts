@@ -15,8 +15,11 @@ import { pool } from '../src/db/pool';
 async function main() {
   const provider = getProvider();
 
+  let stepStart = Date.now();
+
   try {
     // 1. generateText
+    stepStart = Date.now();
     const textRes = await provider.generateText({
       system: 'Keep your response brief.',
       prompt: 'Reply with the word OK',
@@ -45,6 +48,7 @@ async function main() {
       required: ['answer'],
     };
 
+    stepStart = Date.now();
     const jsonRes = await provider.generateJSON({
       system: 'Output JSON matching the schema.',
       prompt: 'Reply with the word OK in JSON { answer: "OK" }',
@@ -67,6 +71,7 @@ async function main() {
       success: true,
     });
   } catch (err: unknown) {
+    const elapsed = Date.now() - stepStart;
     if (err instanceof AIUnavailableError) {
       console.log(`reason=${err.reason}`);
       await logAiCall({
@@ -75,7 +80,7 @@ async function main() {
         model: provider.model,
         promptTokens: 0,
         completionTokens: 0,
-        latencyMs: 0,
+        latencyMs: elapsed,
         success: false,
         error: err.reason,
       });

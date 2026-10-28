@@ -44,3 +44,9 @@ adminRouter.post(
   validate({ params: adminTicketIdParamSchema, body: noteTicketSchema }),
   adminTicketController.addNote
 );
+
+adminRouter.post(
+  '/tickets/:id/triage',
+  validate({ params: adminTicketIdParamSchema }),
+  adminTicketController.retryTriage
+);

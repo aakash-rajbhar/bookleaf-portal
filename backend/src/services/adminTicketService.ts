@@ -1,6 +1,7 @@
 import { pool, query } from '../db/pool';
 import { AppError } from '../utils/errors';
 import { publishTicketEvent } from './ticketEvents';
+import { triageQueue } from './triageQueue';
 import {
   toAdminTicketItemResponse,
   toBookResponse,
@@ -602,6 +603,29 @@ export class AdminTicketService {
       body: note.body,
       createdAt: note.created_at,
     };
+  }
+
+  /**
+   * Resets ai_status to 'pending' and re-enqueues ticket for AI triage.
+   * Throws 404 if ticket is not found.
+   */
+  async retryTriage(ticketId: string): Promise<{ message: string; ticketId: string }> {
+    const ticketCheck = await query<{ id: string }>(
+      'SELECT id FROM tickets WHERE id = $1',
+      [ticketId]
+    );
+    if (ticketCheck.length === 0) {
+      throw AppError.notFound(`Ticket ${ticketId} not found`);
+    }
+
+    await pool.query(
+      "UPDATE tickets SET ai_status = 'pending', ai_reason = NULL, updated_at = now() WHERE id = $1",
+      [ticketId]
+    );
+
+    await triageQueue.enqueue(ticketId);
+
+    return { message: 'Triage queued', ticketId };
   }
 }
 

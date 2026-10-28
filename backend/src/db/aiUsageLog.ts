@@ -17,6 +17,11 @@ export interface LogAiCallParams {
  * Telemetry logging failure is safely caught and ignored so it never throws into the caller.
  */
 export async function logAiCall(params: LogAiCallParams): Promise<void> {
+  // Do not write an ai_usage_log row for 'not_configured' failures: no request was made
+  if (params.error === 'not_configured') {
+    return;
+  }
+
   try {
     // TODO: Add thinking_tokens column to ai_usage_log in a future migration if separate reporting is required.
     // Currently, thinking tokens are folded into completion_tokens to preserve total token telemetry.

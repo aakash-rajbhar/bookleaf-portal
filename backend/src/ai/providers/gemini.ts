@@ -71,8 +71,14 @@ export class GeminiProvider implements LLMProvider {
     }
 
     if (status === 400 || status === 401 || status === 403) {
-      if (msg.includes('api key') || msg.includes('unauthenticated') || msg.includes('permission_denied')) {
-        return new AIUnavailableError('not_configured', 'AI API key is invalid or unauthorized');
+      if (
+        msg.includes('api key') ||
+        msg.includes('unauthenticated') ||
+        msg.includes('permission_denied') ||
+        status === 401 ||
+        status === 403
+      ) {
+        return new AIUnavailableError('upstream', 'API key rejected by Google');
       }
       return new AIUnavailableError('upstream', 'AI upstream request rejected');
     }
