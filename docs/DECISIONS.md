@@ -8,3 +8,4 @@
 - D7: Plain SQL migrations executed within transactions and tracked via `schema_migrations` table for atomic, idempotent execution without heavy third-party migration tools.
 - D8: Pinned JWT algorithm to HS256 on sign and verify, with dummy bcrypt comparison for unknown emails to prevent username enumeration timing attacks.
 - D9: Book endpoints return 404 instead of 403 when an author requests a book owned by another author to prevent resource existence enumeration.
+- D10: Author-facing ticket responses strictly omit internal and AI triage metadata (category, priority, AI fields, internal notes) and return 404 for tickets belonging to other authors.

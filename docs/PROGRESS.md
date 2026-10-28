@@ -8,7 +8,7 @@
 | T03 | Seed script (JSON -> authors/books, users, admins) | done |
 | T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | done |
 | T05 | Books endpoints with ownership rules | done |
-| T06 | Tickets: author create/list/get | todo |
+| T06 | Tickets: author create/list/get | done |
 | T07 | SSE hub + /events | todo |
 | T08 | Admin ticket endpoints (queue filters, patch, notes, reply) | todo |
 | T09 | AI: LLMProvider, GeminiProvider, MockProvider, rate limiter | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T05 complete (implemented books route, controller, service with parameterized SQL, mappers preserving SQL nulls and computing `isInProduction`, ownership enforcement returning 404 for non-owned books, registered after `authenticate`; verified all acceptance criteria).
-- Not done: T06 author tickets.
-- Next: T06 (`docs/tasks/T06-tickets-author.md`).
+- Done: T06 complete (implemented author tickets endpoints: POST/GET /tickets and GET /tickets/:id; validated book ownership returning 400 INVALID_BOOK; author-facing mapper isolating internal/AI fields and internal notes; async triageQueue stub with safe error suppression; verified 404 for foreign tickets, 403 for admin tokens, and Zod length validations).
+- Not done: T07 SSE hub + /events.
+- Next: T07 (`docs/tasks/T07-sse.md`).
 - Known bugs: none.

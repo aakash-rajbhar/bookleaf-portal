@@ -72,3 +72,68 @@ export function toBookResponse(row: BookRow, isAdmin = false): BookResponse {
 
   return res;
 }
+
+export interface TicketRow {
+  id: string;
+  author_id: string;
+  book_id: string | null;
+  book_title?: string | null;
+  subject: string;
+  description: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TicketMessageRow {
+  id: string;
+  sender_role: 'author' | 'admin';
+  body: string;
+  created_at: string;
+}
+
+export interface TicketMessageResponse {
+  id: string;
+  senderRole: 'author' | 'admin';
+  body: string;
+  createdAt: string;
+}
+
+export interface AuthorTicketResponse {
+  id: string;
+  subject: string;
+  description: string;
+  status: string;
+  bookId: string | null;
+  bookTitle: string | null;
+  createdAt: string;
+  updatedAt: string;
+  messages: TicketMessageResponse[];
+}
+
+/**
+ * Author-facing ticket shape:
+ * { id, subject, description, status, bookId, bookTitle, createdAt, updatedAt, messages }
+ * Omits internal fields: category, priority, *_source, ai_status, ai_reason, assigned_to, internal notes.
+ */
+export function toAuthorTicketResponse(
+  row: TicketRow,
+  messages: TicketMessageRow[] = []
+): AuthorTicketResponse {
+  return {
+    id: row.id,
+    subject: row.subject,
+    description: row.description,
+    status: row.status,
+    bookId: row.book_id ?? null,
+    bookTitle: row.book_title ?? null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    messages: messages.map((m) => ({
+      id: m.id,
+      senderRole: m.sender_role,
+      body: m.body,
+      createdAt: m.created_at,
+    })),
+  };
+}

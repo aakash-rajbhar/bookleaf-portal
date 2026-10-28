@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { healthRouter } from './health';
 import { authRouter } from './auth';
 import { booksRouter } from './books';
+import { ticketsRouter } from './tickets';
 import { authenticate } from '../middleware/authenticate';
 import { requireRole } from '../middleware/requireRole';
 
@@ -16,6 +17,7 @@ apiRouter.use('/auth', authRouter);
 apiRouter.use(authenticate);
 
 apiRouter.use('/books', booksRouter);
+apiRouter.use('/tickets', ticketsRouter);
 
 // Temporary debug route to test role guard
 // TODO: remove in T08
