@@ -6,3 +6,4 @@
 - D5: Gemini free tier behind LLMProvider interface + MockProvider so quota never blocks dev or the live demo.
 - D6: AI triage runs async after ticket insert, so ticket creation never depends on the AI.
 - D7: Plain SQL migrations executed within transactions and tracked via `schema_migrations` table for atomic, idempotent execution without heavy third-party migration tools.
+- D8: Pinned JWT algorithm to HS256 on sign and verify, with dummy bcrypt comparison for unknown emails to prevent username enumeration timing attacks.

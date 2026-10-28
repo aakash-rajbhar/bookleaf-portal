@@ -6,7 +6,7 @@
 | T01 | Backend bootstrap: install, env validation, health route, error handler | done |
 | T02 | DB pool + SQL migrations (schema from DATA_MODEL.md) | done |
 | T03 | Seed script (JSON -> authors/books, users, admins) | done |
-| T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | todo |
+| T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | done |
 | T05 | Books endpoints with ownership rules | todo |
 | T06 | Tickets: author create/list/get | todo |
 | T07 | SSE hub + /events | todo |
@@ -21,7 +21,7 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T03 complete (implemented `backend/scripts/seed.ts` running in a single transaction, idempotent upserts, precomputed bcrypt cost 10 hash, mapped null fields to SQL NULL, preserved UTF-8 titles like "Durga’s Daughters", verified counts: 10 authors, 18 books, 12 users, verified password check).
-- Not done: T04 auth & RBAC.
-- Next: T04 (`docs/tasks/T04-auth.md`).
+- Done: T04 complete (implemented auth service with dummy bcrypt hash timing defense, auth controller with zod validation, pinned HS256 JWT sign & verify, authenticate middleware, requireRole middleware, req.user typing, wired in routes/index.ts, added temporary GET /api/v1/_debug/admin-only route with TODO to remove in T08; verified all acceptance criteria).
+- Not done: T05 books endpoints.
+- Next: T05 (`docs/tasks/T05-books.md`).
 - Known bugs: none.
