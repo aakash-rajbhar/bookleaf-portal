@@ -3,8 +3,8 @@ import { healthRouter } from './health';
 import { authRouter } from './auth';
 import { booksRouter } from './books';
 import { ticketsRouter } from './tickets';
+import { adminRouter } from './admin';
 import { authenticate } from '../middleware/authenticate';
-import { requireRole } from '../middleware/requireRole';
 
 /** Mounted at /api/v1. Public routes first; `authenticate` is applied before protected routers. */
 export const apiRouter = Router();
@@ -18,12 +18,4 @@ apiRouter.use(authenticate);
 
 apiRouter.use('/books', booksRouter);
 apiRouter.use('/tickets', ticketsRouter);
-
-// Temporary debug route to test role guard
-// TODO: remove in T08
-apiRouter.get('/_debug/admin-only', requireRole('admin'), (req, res) => {
-  res.status(200).json({
-    message: 'admin access granted',
-    user: req.user,
-  });
-});
+apiRouter.use('/admin', adminRouter);

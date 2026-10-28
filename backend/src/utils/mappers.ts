@@ -1,3 +1,10 @@
+import {
+  type TicketStatus,
+  type TicketCategory,
+  type TicketPriority,
+  SLA_HOURS,
+} from '../constants/ticket';
+
 export interface BookRow {
   id: string;
   author_id: string;
@@ -135,5 +142,141 @@ export function toAuthorTicketResponse(
       body: m.body,
       createdAt: m.created_at,
     })),
+  };
+}
+
+export interface AdminTicketRow {
+  id: string;
+  author_id: string;
+  author_name: string;
+  author_email?: string;
+  author_city?: string;
+  book_id: string | null;
+  book_title: string | null;
+  subject: string;
+  description?: string;
+  status: TicketStatus;
+  category: TicketCategory | null;
+  category_source: string | null;
+  priority: TicketPriority | null;
+  priority_source: string | null;
+  ai_status: string;
+  ai_reason?: string | null;
+  assigned_to: string | null;
+  assigned_to_name?: string | null;
+  created_at: string;
+  updated_at: string;
+  resolved_at?: string | null;
+}
+
+export interface AdminTicketItemResponse {
+  id: string;
+  subject: string;
+  status: TicketStatus;
+  category: TicketCategory | null;
+  categorySource: string | null;
+  priority: TicketPriority | null;
+  prioritySource: string | null;
+  aiStatus: string;
+  authorId: string;
+  authorName: string;
+  bookId: string | null;
+  bookTitle: string | null;
+  assignedTo: { id: string; name: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  ageHours: number;
+  isOverdue: boolean;
+}
+
+export interface AdminInternalNoteResponse {
+  id: string;
+  adminId: string;
+  adminName: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface AdminDraftResponse {
+  id: string;
+  draftText: string;
+  model: string;
+  createdAt: string;
+}
+
+export interface AdminTicketDetailResponse {
+  id: string;
+  subject: string;
+  description: string;
+  status: TicketStatus;
+  category: TicketCategory | null;
+  categorySource: string | null;
+  priority: TicketPriority | null;
+  prioritySource: string | null;
+  aiStatus: string;
+  aiReason: string | null;
+  authorId: string;
+  authorName: string;
+  bookId: string | null;
+  bookTitle: string | null;
+  assignedTo: { id: string; name: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt: string | null;
+  ageHours: number;
+  isOverdue: boolean;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+    city: string;
+  };
+  book: BookResponse | null;
+  messages: TicketMessageResponse[];
+  internalNotes: AdminInternalNoteResponse[];
+  latestDraft: AdminDraftResponse | null;
+}
+
+export function computeAgeHours(createdAt: string): number {
+  const diffMs = Date.now() - new Date(createdAt).getTime();
+  return Math.max(0, Math.round((diffMs / 3600000) * 10) / 10);
+}
+
+export function computeIsOverdue(
+  status: string,
+  priority: TicketPriority | null,
+  ageHours: number
+): boolean {
+  const isUnresolved = status === 'Open' || status === 'In Progress';
+  const effectivePriority = priority ?? 'Medium';
+  const slaLimit = SLA_HOURS[effectivePriority] ?? 96;
+  return isUnresolved && ageHours > slaLimit;
+}
+
+export function toAdminTicketItemResponse(row: AdminTicketRow): AdminTicketItemResponse {
+  const ageHours = computeAgeHours(row.created_at);
+  const isOverdue = computeIsOverdue(row.status, row.priority, ageHours);
+
+  return {
+    id: row.id,
+    subject: row.subject,
+    status: row.status,
+    category: row.category,
+    categorySource: row.category_source,
+    priority: row.priority,
+    prioritySource: row.priority_source,
+    aiStatus: row.ai_status,
+    authorId: row.author_id,
+    authorName: row.author_name,
+    bookId: row.book_id ?? null,
+    bookTitle: row.book_title ?? null,
+    assignedTo:
+      row.assigned_to && row.assigned_to_name
+        ? { id: row.assigned_to, name: row.assigned_to_name }
+        : null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    ageHours,
+    isOverdue,
   };
 }

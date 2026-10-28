@@ -9,3 +9,4 @@
 - D8: Pinned JWT algorithm to HS256 on sign and verify, with dummy bcrypt comparison for unknown emails to prevent username enumeration timing attacks.
 - D9: Book endpoints return 404 instead of 403 when an author requests a book owned by another author to prevent resource existence enumeration.
 - D10: Author-facing ticket responses strictly omit internal and AI triage metadata (category, priority, AI fields, internal notes) and return 404 for tickets belonging to other authors.
+- D11: SLA thresholds defined by priority (Critical: 24h, High: 48h, Medium: 96h, Low: 168h; null priority defaults to Medium). A ticket is flagged as isOverdue when unresolved ('Open' or 'In Progress') and its age exceeds its SLA limit.
