@@ -5,3 +5,4 @@
 - D4: SSE auth via `?token=` query param because EventSource can't set headers (acceptable trade-off; short-lived JWT in production would be better).
 - D5: Gemini free tier behind LLMProvider interface + MockProvider so quota never blocks dev or the live demo.
 - D6: AI triage runs async after ticket insert, so ticket creation never depends on the AI.
+- D7: Plain SQL migrations executed within transactions and tracked via `schema_migrations` table for atomic, idempotent execution without heavy third-party migration tools.

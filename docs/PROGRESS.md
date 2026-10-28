@@ -3,8 +3,8 @@
 ## Checklist  (todo | doing | done)
 | ID | Task | Status |
 |---|---|---|
-| T01 | Backend bootstrap: install, env validation, health route, error handler | todo |
-| T02 | DB pool + SQL migrations (schema from DATA_MODEL.md) | todo |
+| T01 | Backend bootstrap: install, env validation, health route, error handler | done |
+| T02 | DB pool + SQL migrations (schema from DATA_MODEL.md) | done |
 | T03 | Seed script (JSON -> authors/books, users, admins) | todo |
 | T04 | Auth: login, JWT, authenticate + requireRole + validate middleware | todo |
 | T05 | Books endpoints with ownership rules | todo |
@@ -20,8 +20,8 @@
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
-- Agent: Claude (scaffolding)
-- Done: repo structure, all docs, backend skeleton files (package.json, tsconfig, env config, app/server, health route, error handler).
-- Not done: nothing installed/run on the user's machine yet.
-- Next: T01 (verify the skeleton runs), then T02.
-- Known bugs: none yet.
+- Agent: Antigravity (Gemini 3.8 Flash)
+- Done: T01 verified, T02 complete (created `001_init.sql` schema and `scripts/migrate.ts` migration runner; tested double migration idempotency; verified all tables created; verified health check reports DB ok).
+- Not done: T03 seed script.
+- Next: T03 (`docs/tasks/T03-seed.md`).
+- Known bugs: none.
