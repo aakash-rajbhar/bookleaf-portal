@@ -15,7 +15,7 @@
 | T10 | AI: triage (classify+priority) + fallback classifier + usage log | done |
 | T11 | AI: draft generation (KB slicing, book facts, cache, fallback draft) | done |
 | T12a | Frontend scaffold, auth, routing, and api client | done |
-| T12b | Author books + submit query | todo |
+| T12b | Author books + submit query | done |
 | T12c | Author tickets with live updates | todo |
 | T13 | Admin portal | todo |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
@@ -23,8 +23,9 @@
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T12a complete (scaffolded frontend in `./frontend` using Vite `react-ts` template and Tailwind CSS v4 via `@tailwindcss/vite` without extra UI libraries; added `react-router-dom`; configured dev proxy in `vite.config.ts` forwarding `/api` to port 4000; created `src/api/types.ts` strictly matching real backend mappers and controllers; created `src/api/client.ts` with error handling, 401 redirect, and token management; built `src/auth/AuthContext.tsx` with session restore from `GET /auth/me` and `src/auth/ProtectedRoute.tsx` with role-based redirects; implemented `src/components/{Layout,Spinner,ErrorBanner,EmptyState}.tsx`; implemented `src/pages/Login.tsx` with inline ApiError handling and collapsible demo logins hint; created page shells for `/books`, `/tickets`, `/tickets/new`, `/tickets/:id`, and `/admin/*`; added "Frontend rules" to `AGENTS.md`; recorded localStorage trade-off in `docs/DECISIONS.md` as D18; created `frontend/.env.example`).
-- Not done: T12b (Author books + submit query).
-- Next: T12b (`docs/tasks/T12b-author-books-submit.md`).
+- Done: T12b complete (built `src/lib/format.ts` with `en-IN` currency, dates, numbers, and em dash `—` fallback; built `src/components/StatusBadge.tsx` with green published and amber in-production styling; built `src/components/BookCard.tsx` with production banner, hidden royalty block when in production, pending royalty payout notes, metadata, and quick query link; updated `src/pages/author/Books.tsx` with loading, error retry, empty states, and quick stats bar; built `src/pages/author/SubmitQuery.tsx` with book dropdown including General and in-production titles, live character counters, client/server validation display, demo attachment notice, double-submit prevention, and seamless redirect to `/tickets/:id` with success banner; updated `Login.tsx` with exact demo author accounts; logged D19 in `docs/DECISIONS.md`).
+- Not done: T12c (Author tickets with live updates).
+- Next: T12c (`docs/tasks/T12c-author-tickets-live.md`).
 - Known bugs: none.
+
 

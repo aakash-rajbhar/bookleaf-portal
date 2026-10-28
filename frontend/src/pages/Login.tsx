@@ -182,13 +182,33 @@ export function Login() {
                     </button>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="truncate mr-2">Ananya Deshmukh (Author):</span>
+                    <span className="truncate mr-2">Ananya Reddy (Author):</span>
                     <button
                       type="button"
-                      onClick={() => fillDemoAccount('ananya.deshmukh@email.com')}
+                      onClick={() => fillDemoAccount('ananya.reddy@email.com')}
                       className="px-2 py-0.5 text-[11px] font-mono rounded bg-white border border-stone-200 hover:bg-amber-50 hover:border-amber-300 text-amber-900 transition"
                     >
                       Fill Ananya
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="truncate mr-2">Kavita Deshmukh (Author):</span>
+                    <button
+                      type="button"
+                      onClick={() => fillDemoAccount('kavita.deshmukh@email.com')}
+                      className="px-2 py-0.5 text-[11px] font-mono rounded bg-white border border-stone-200 hover:bg-amber-50 hover:border-amber-300 text-amber-900 transition"
+                    >
+                      Fill Kavita
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="truncate mr-2">Rohit Kapoor (Author):</span>
+                    <button
+                      type="button"
+                      onClick={() => fillDemoAccount('rohit.kapoor@email.com')}
+                      className="px-2 py-0.5 text-[11px] font-mono rounded bg-white border border-stone-200 hover:bg-amber-50 hover:border-amber-300 text-amber-900 transition"
+                    >
+                      Fill Rohit
                     </button>
                   </div>
                   <div className="flex items-center justify-between">
