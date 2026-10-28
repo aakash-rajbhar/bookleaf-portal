@@ -7,7 +7,8 @@ import { Books } from './pages/author/Books';
 import { SubmitQuery } from './pages/author/SubmitQuery';
 import { Tickets } from './pages/author/Tickets';
 import { TicketDetail } from './pages/author/TicketDetail';
-import { AdminPlaceholder } from './pages/admin/AdminPlaceholder';
+import { Queue } from './pages/admin/Queue';
+import { TicketDetailPlaceholder } from './pages/admin/TicketDetailPlaceholder';
 
 export function App() {
   return (
@@ -31,15 +32,17 @@ export function App() {
             <Route path="/tickets/:id" element={<TicketDetail />} />
           </Route>
 
-          {/* Admin routes (reserved for T13) */}
+          {/* Admin routes with app shell Layout */}
           <Route
-            path="/admin/*"
             element={
               <ProtectedRoute role="admin">
-                <AdminPlaceholder />
+                <Layout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path="/admin" element={<Queue />} />
+            <Route path="/admin/tickets/:id" element={<TicketDetailPlaceholder />} />
+          </Route>
 
           {/* Default and catch-all redirect */}
           <Route path="/" element={<Navigate to="/books" replace />} />

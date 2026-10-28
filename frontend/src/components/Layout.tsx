@@ -7,35 +7,48 @@ export function Layout() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isAdmin = user?.role === 'admin';
+
   const handleLogout = () => {
     logout();
     navigate('/login', { replace: true });
   };
 
-  const navItems = [
-    { label: 'My Books', path: '/books' },
-    { label: 'Submit Query', path: '/tickets/new' },
-    { label: 'My Tickets', path: '/tickets' },
-  ];
+  const navItems = isAdmin
+    ? [{ label: 'Queue', path: '/admin' }]
+    : [
+        { label: 'My Books', path: '/books' },
+        { label: 'Submit Query', path: '/tickets/new' },
+        { label: 'My Tickets', path: '/tickets' },
+      ];
+
+  const homePath = isAdmin ? '/admin' : '/books';
+  const containerWidth = isAdmin ? 'max-w-7xl' : 'max-w-6xl';
 
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col text-stone-900 font-sans">
       {/* Top Header */}
       <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-2xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`${containerWidth} mx-auto px-4 sm:px-6 lg:px-8`}>
           <div className="flex items-center justify-between h-16">
             {/* Brand Logo */}
             <div className="flex items-center gap-8">
-              <NavLink to="/books" className="flex items-center gap-2.5 group">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-700 text-white font-bold text-lg shadow-xs group-hover:bg-amber-800 transition">
-                  🍃
+              <NavLink to={homePath} className="flex items-center gap-2.5 group">
+                <span
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg text-white font-bold text-lg shadow-xs transition ${
+                    isAdmin
+                      ? 'bg-stone-900 group-hover:bg-stone-800'
+                      : 'bg-amber-700 group-hover:bg-amber-800'
+                  }`}
+                >
+                  {isAdmin ? '🛡️' : '🍃'}
                 </span>
                 <div className="flex flex-col">
                   <span className="text-base font-bold text-stone-900 tracking-tight leading-none group-hover:text-amber-800 transition">
                     BookLeaf
                   </span>
                   <span className="text-xs text-stone-500 font-medium tracking-wide">
-                    Author Portal
+                    {isAdmin ? 'Admin Portal' : 'Author Portal'}
                   </span>
                 </div>
               </NavLink>
@@ -46,7 +59,7 @@ export function Layout() {
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    end={item.path === '/books'}
+                    end={item.path === '/books' || item.path === '/admin'}
                     className={({ isActive }) =>
                       `px-3.5 py-2 rounded-md text-sm font-medium transition ${
                         isActive
@@ -65,13 +78,26 @@ export function Layout() {
             <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center gap-2 text-right">
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-stone-800 leading-tight">
-                    {user?.name || 'Author'}
-                  </span>
+                  <div className="flex items-center gap-1.5 justify-end">
+                    <span className="text-sm font-semibold text-stone-800 leading-tight">
+                      {user?.name || (isAdmin ? 'Admin' : 'Author')}
+                    </span>
+                    {isAdmin && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded border border-amber-200">
+                        Admin
+                      </span>
+                    )}
+                  </div>
                   <span className="text-xs text-stone-500">{user?.email}</span>
                 </div>
-                <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-900 font-semibold flex items-center justify-center text-xs border border-amber-200">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                <div
+                  className={`h-8 w-8 rounded-full font-semibold flex items-center justify-center text-xs border ${
+                    isAdmin
+                      ? 'bg-stone-100 text-stone-800 border-stone-300'
+                      : 'bg-amber-100 text-amber-900 border-amber-200'
+                  }`}
+                >
+                  {user?.name ? user.name.charAt(0).toUpperCase() : isAdmin ? 'A' : 'U'}
                 </div>
               </div>
 
@@ -124,7 +150,7 @@ export function Layout() {
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === '/books'}
+                end={item.path === '/books' || item.path === '/admin'}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `block px-3 py-2 rounded-md text-base font-medium ${
@@ -156,14 +182,14 @@ export function Layout() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className={`flex-1 ${containerWidth} w-full mx-auto px-4 sm:px-6 lg:px-8 py-8`}>
         <Outlet />
       </main>
 
       {/* Footer */}
       <footer className="border-t border-stone-200 bg-white py-4 text-center text-xs text-stone-500">
-        <div className="max-w-6xl mx-auto px-4">
-          BookLeaf Publishing &middot; Author Support & Communication Portal
+        <div className={`${containerWidth} mx-auto px-4`}>
+          BookLeaf Publishing &middot; {isAdmin ? 'Support Operations Center' : 'Author Support & Communication Portal'}
         </div>
       </footer>
     </div>

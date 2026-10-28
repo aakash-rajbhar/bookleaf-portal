@@ -17,16 +17,18 @@
 | T12a | Frontend scaffold, auth, routing, and api client | done |
 | T12b | Author books + submit query | done |
 | T12c | Author tickets with live updates | done |
-| T13 | Admin portal | todo |
+| T13a | Admin ticket queue | done |
+| T13b | Admin ticket detail with AI draft editor | todo |
 | T14 | Deploy (Neon + Render + Vercel) | todo |
 | T15 | README, API docs, 1-page write-up | todo |
 
 ## Last session
 - Agent: Antigravity (Gemini 3.8 Flash)
-- Done: T12c complete (added `formatRelativeTime` and `formatDateTime` helpers to `src/lib/format.ts`; built `src/components/TicketStatusBadge.tsx` with Open=blue, In Progress=amber, Resolved=green, Closed=grey; built `src/components/MessageThread.tsx` rendering author original query and chronological replies with official BookLeaf Support badge and pre-wrap line breaks; built `src/hooks/useTicketStream.ts` and `src/components/StreamStatusIndicator.tsx` supporting 60s stream token acquisition, auto token-refresh on reconnect with exponential backoff, 30s polling fallback while disconnected, document visibility refetch, and StrictMode duplicate-connection protection; built `src/pages/author/Tickets.tsx` with unread dot indicators via localStorage, live stream updates, and empty/error states; built `src/pages/author/TicketDetail.tsx` with one-off submission notice clearance from history state, read tracking, friendly 404 handling, and live updates; logged D20 in `docs/DECISIONS.md`).
-- Not done: T13 (Admin portal).
-- Next: T13 (`docs/tasks/T13-admin-portal.md` or next task).
+- Done: T13a complete (built `src/pages/admin/Queue.tsx` with responsive data table, urgency ranking, overdue styling, and summary strip; built `src/components/admin/FilterBar.tsx` with debounced search, status, category, priority, assignment, date range, and sort controls synchronized with URL query params; built `src/components/admin/{PriorityBadge,CategoryBadge,AiSourceBadge,TicketRow}.tsx`; built `src/components/Pagination.tsx` with limit 25 and counter; added `admin.tickets.list` to `src/api/client.ts` and `AdminTicketsQuery` to `src/api/types.ts`; updated `Layout.tsx` for admin navigation; created `/admin/tickets/:id` placeholder; integrated `useTicketStream` for in-place live queue updates; logged D21 in `docs/DECISIONS.md`).
+- Not done: T13b (Admin ticket detail with AI draft editor).
+- Next: T13b (`docs/tasks/T13b-admin-ticket-detail.md`).
 - Known bugs: none.
+
 
 
 

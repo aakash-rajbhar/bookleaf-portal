@@ -6,6 +6,9 @@ import type {
   AuthorTicket,
   CreateTicketInput,
   StreamTokenResponse,
+  AdminTicketsQuery,
+  AdminTicketListResponse,
+  AdminTicketDetail,
 } from './types';
 
 const TOKEN_KEY = 'bookleaf_auth_token';
@@ -152,5 +155,27 @@ export const api = {
   // Realtime events
   events: {
     createToken: () => api.post<StreamTokenResponse>('/events/token'),
+  },
+
+  // Admin endpoints (T13)
+  admin: {
+    tickets: {
+      list: (params: AdminTicketsQuery = {}) => {
+        const sp = new URLSearchParams();
+        if (params.status) sp.set('status', params.status);
+        if (params.category) sp.set('category', params.category);
+        if (params.priority) sp.set('priority', params.priority);
+        if (params.from) sp.set('from', params.from);
+        if (params.to) sp.set('to', params.to);
+        if (params.assignedTo) sp.set('assignedTo', params.assignedTo);
+        if (params.q) sp.set('q', params.q);
+        if (params.sort) sp.set('sort', params.sort);
+        if (params.limit !== undefined) sp.set('limit', String(params.limit));
+        if (params.offset !== undefined) sp.set('offset', String(params.offset));
+        const qs = sp.toString();
+        return api.get<AdminTicketListResponse>(`/admin/tickets${qs ? `?${qs}` : ''}`);
+      },
+      getById: (id: string) => api.get<AdminTicketDetail>(`/admin/tickets/${id}`),
+    },
   },
 };

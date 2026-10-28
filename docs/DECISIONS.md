@@ -32,6 +32,11 @@
   2) Robust fallback polling: While the stream is disconnected or reconnecting (`status !== 'live'`), an interval polls the active page query every 30 seconds (`type: 'poll'`), ensuring the author never misses replies even if SSE is temporarily blocked or down. Polling immediately halts as soon as the stream becomes live.
   3) StrictMode & Lifecycle hygiene: Uses a cancelled flag and abort pattern to guarantee that React StrictMode double-mounting never opens duplicate streams. The callback reference is retained in a ref (`onEventRef`) so stream connections are not torn down on every component re-render.
   4) Seamless in-place updates: Real-time refetches update data without flashing full-page loading spinners, and monotonic request sequence IDs ignore out-of-order responses.
+- D21: Admin ticket queue architecture and URL-synchronized state:
+  1) URL-driven filter state: All queue filters (status, category, priority, assignment, date ranges, search query, and sort order) are synchronized bidirectionally with the URL query parameters (`useSearchParams`). This guarantees that browser refresh, back/forward navigation, and shared admin links restore the exact filtered view. Changing any filter automatically resets pagination offset to 0.
+  2) Real-time live queue synchronization: Reuses `useTicketStream` on the admin stream (`admins` channel). Real-time events (`ticket.created`, `ticket.triaged`, `ticket.reply`) trigger an in-place background refetch of the active filtered page without unmounting or flashing loading spinners, preserving scroll position and table context. Monotonic request sequencing discards out-of-order asynchronous responses.
+  3) Visual triage and urgency hierarchy: Backend urgency sort puts unresolved tickets first ranked by priority and age. Rows with SLA breaches (`isOverdue = true`) are prominent with a red left border and "Overdue" indicator, while resolved/closed rows are visually dimmed. AI states are clearly communicated (Classifying..., Rule-based fallback, or Admin edited).
+
 
 
 

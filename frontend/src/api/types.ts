@@ -102,6 +102,19 @@ export interface AdminTicketItem {
   isOverdue: boolean;
 }
 
+export interface AdminTicketsQuery {
+  status?: TicketStatus;
+  category?: TicketCategory;
+  priority?: TicketPriority;
+  from?: string;
+  to?: string;
+  assignedTo?: 'me' | 'unassigned' | string;
+  q?: string;
+  sort?: 'urgency' | 'newest' | 'oldest';
+  limit?: number;
+  offset?: number;
+}
+
 export interface AdminTicketListResponse {
   items: AdminTicketItem[];
   total: number;
