@@ -14,13 +14,13 @@ export interface FallbackTriageResult {
 /**
  * Pure function rule-based fallback classifier.
  * Evaluates ordered keyword rules case-insensitively:
- * 1. ISBN first -> 'ISBN & Metadata', Priority High
+ * 1. ISBN first -> 'ISBN & Metadata Issues', Priority High
  * 2. Printing (blurry, misprint, binding, torn, quality) -> 'Printing & Quality', Priority High
- * 3. Distribution (unavailable, not showing, listing, amazon, flipkart) -> 'Distribution', Priority High
+ * 3. Distribution (unavailable, not showing, listing, amazon, flipkart) -> 'Distribution & Availability', Priority High
  * 4. Royalty (royalty, payment, payout, paid, earnings) -> 'Royalty & Payments',
  *    Priority High if (months|never received|still haven't|not received), else Medium
- * 5. Production (status, typesetting, cover, proofreading, when will) -> 'Production Updates', Priority Medium
- * 6. Else General Inquiry -> 'General', Priority Low if (bio|description|update|change), else Medium
+ * 5. Production (status, typesetting, cover, proofreading, when will) -> 'Book Status & Production Updates', Priority Medium
+ * 6. Else General Inquiry -> 'General Inquiry', Priority Low if (bio|description|update|change), else Medium
  */
 export function fallbackClassifier(
   subject: string,
@@ -36,7 +36,7 @@ export function fallbackClassifier(
     text.includes('imprint')
   ) {
     return {
-      category: 'ISBN & Metadata',
+      category: 'ISBN & Metadata Issues',
       priority: 'High',
       reason: 'rule-based fallback',
     };
@@ -74,7 +74,7 @@ export function fallbackClassifier(
 
   if (hasListingIssue || isRetailerWithoutBioUpdate) {
     return {
-      category: 'Distribution',
+      category: 'Distribution & Availability',
       priority: 'High',
       reason: 'rule-based fallback',
     };
@@ -121,7 +121,7 @@ export function fallbackClassifier(
 
   if (isProduction) {
     return {
-      category: 'Production Updates',
+      category: 'Book Status & Production Updates',
       priority: 'Medium',
       reason: 'rule-based fallback',
     };
@@ -135,7 +135,7 @@ export function fallbackClassifier(
     text.includes('change');
 
   return {
-    category: 'General',
+    category: 'General Inquiry',
     priority: isLow ? 'Low' : 'Medium',
     reason: 'rule-based fallback',
   };

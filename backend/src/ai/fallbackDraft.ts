@@ -18,7 +18,7 @@ export interface FallbackDraftInput {
  */
 export function fallbackDraft(input: FallbackDraftInput): string {
   const firstName = input.authorName?.trim().split(/\s+/)[0] || 'there';
-  const category = input.category ?? 'General';
+  const category = input.category ?? 'General Inquiry';
   const facts = input.facts;
 
   switch (category) {
@@ -63,7 +63,7 @@ export function fallbackDraft(input: FallbackDraftInput): string {
       );
     }
 
-    case 'ISBN & Metadata':
+    case 'ISBN & Metadata Issues':
       return (
         `Hello ${firstName},\n\n` +
         `Thank you for bringing this ISBN and metadata issue to our attention${facts ? ` regarding "${facts.title}"` : ''}.\n\n` +
@@ -82,7 +82,7 @@ export function fallbackDraft(input: FallbackDraftInput): string {
         `BookLeaf Support Team`
       );
 
-    case 'Distribution':
+    case 'Distribution & Availability':
       return (
         `Hello ${firstName},\n\n` +
         `Thank you for reaching out regarding the distribution availability${facts ? ` of "${facts.title}"` : ''}.\n\n` +
@@ -92,7 +92,7 @@ export function fallbackDraft(input: FallbackDraftInput): string {
         `BookLeaf Support Team`
       );
 
-    case 'Production Updates':
+    case 'Book Status & Production Updates':
       return (
         `Hello ${firstName},\n\n` +
         `Thank you for checking in on the production progress of "${facts?.title ?? 'your book'}".\n\n` +
@@ -102,7 +102,7 @@ export function fallbackDraft(input: FallbackDraftInput): string {
         `BookLeaf Support Team`
       );
 
-    case 'General':
+    case 'General Inquiry':
     default:
       return (
         `Hello ${firstName},\n\n` +

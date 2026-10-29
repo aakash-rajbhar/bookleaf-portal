@@ -48,7 +48,7 @@ export const KB_EXAMPLES: Record<TicketCategory, string> = {
 - Query: Sold 200 copies but only got Rs 3,000
   Expected response: Explain net profit calc (MRP - printing - platform commission - shipping). Offer line-by-line breakdown. Not defensive; transparent.`,
 
-  'ISBN & Metadata': `[Example Response Guidelines]
+  'ISBN & Metadata Issues': `[Example Response Guidelines]
 - Query: Amazon shows different ISBN than physical copy
   Expected response: High priority. Serious data issue. Confirm escalation to production team immediately. 48-hour timeline.`,
 
@@ -56,26 +56,26 @@ export const KB_EXAMPLES: Record<TicketCategory, string> = {
 - Query: Author copies blurry, pages misaligned
   Expected response: Apologise sincerely. Ask for photos. Confirm free reprint once verified. 5-7 business days for reprint.`,
 
-  Distribution: `[Example Response Guidelines]
+  'Distribution & Availability': `[Example Response Guidelines]
 - Query: Shows "Currently Unavailable" on Amazon
   Expected response: Typically stock sync issue. Confirm re-sync triggered with distribution team. 24-48 hours.`,
 
-  'Production Updates': `[Example Response Guidelines]
+  'Book Status & Production Updates': `[Example Response Guidelines]
 - Query: 3 weeks in typesetting, when done?
   Expected response: Check actual status. If delayed, be honest about why (e.g. waiting on author approval). Give specific updated timeline. Don't blame author; frame collaboratively.`,
 
-  General: `[Example Response Guidelines]
+  'General Inquiry': `[Example Response Guidelines]
 - Query: Can I update description on Amazon after live?
   Expected response: Yes, via dashboard or emailing BookLeaf team. Changes reflect on platforms within 3-5 business days.`,
 };
 
 export const CATEGORY_SECTIONS: Record<TicketCategory, string> = {
   'Royalty & Payments': KB_ROYALTY,
-  'ISBN & Metadata': KB_ISBN,
+  'ISBN & Metadata Issues': KB_ISBN,
   'Printing & Quality': KB_PRINTING,
-  Distribution: KB_DISTRIBUTION,
-  'Production Updates': KB_PRODUCTION,
-  General: KB_COMPANY,
+  'Distribution & Availability': KB_DISTRIBUTION,
+  'Book Status & Production Updates': KB_PRODUCTION,
+  'General Inquiry': KB_COMPANY,
 };
 
 /**
@@ -86,13 +86,13 @@ export const CATEGORY_SECTIONS: Record<TicketCategory, string> = {
  * 3. The category's specific example entry
  *
  * Never returns the full KB to preserve prompt token budget and prevent policy hallucination.
- * Defaults to 'General' if category is null/undefined/unrecognized.
+ * Defaults to 'General Inquiry' if category is null/undefined/unrecognized.
  */
 export function buildKnowledgeContext(category?: TicketCategory | null | string): string {
   const effectiveCategory: TicketCategory =
     category && category in CATEGORY_SECTIONS
       ? (category as TicketCategory)
-      : 'General';
+      : 'General Inquiry';
 
   const section = CATEGORY_SECTIONS[effectiveCategory];
   const example = KB_EXAMPLES[effectiveCategory];

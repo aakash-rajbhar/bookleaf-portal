@@ -97,17 +97,17 @@ export class MockProvider implements LLMProvider {
     }
 
     // 2. Keyword-based triage candidate
-    let category = 'Account / General';
+    let category = 'General Inquiry';
     if (lower.includes('royalt') || lower.includes('payout') || lower.includes('earning')) {
-      category = 'Royalty / Payout';
-    } else if (lower.includes('format') || lower.includes('cover') || lower.includes('isbn') || lower.includes('manuscript')) {
-      category = 'Book Setup / Formatting';
+      category = 'Royalty & Payments';
+    } else if (lower.includes('isbn') || lower.includes('barcode') || lower.includes('metadata')) {
+      category = 'ISBN & Metadata Issues';
     } else if (lower.includes('amazon') || lower.includes('distribut') || lower.includes('store') || lower.includes('availability')) {
-      category = 'Distribution / Availability';
+      category = 'Distribution & Availability';
     } else if (lower.includes('order') || lower.includes('ship') || lower.includes('cop') || lower.includes('print')) {
-      category = 'Orders / Shipping';
-    } else if (lower.includes('market') || lower.includes('promot') || lower.includes('ad')) {
-      category = 'Marketing / Promotion';
+      category = 'Printing & Quality';
+    } else if (lower.includes('typeset') || lower.includes('proof') || lower.includes('stage') || lower.includes('status')) {
+      category = 'Book Status & Production Updates';
     }
 
     let priority = 'Medium';

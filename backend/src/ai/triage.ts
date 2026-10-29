@@ -67,13 +67,13 @@ export interface TriageResult {
 
 /**
  * Pure function guardrails applied after model or fallback classification.
- * KB Policy: Any ISBN & Metadata issue must be at least 'High' priority.
+ * KB Policy: Any ISBN & Metadata Issues ticket must be at least 'High' priority.
  */
 export function applyTriageGuardrails(
   category: TicketCategory,
   priority: TicketPriority
 ): TicketPriority {
-  if (category === 'ISBN & Metadata') {
+  if (category === 'ISBN & Metadata Issues') {
     if (priority === 'Medium' || priority === 'Low') {
       return 'High';
     }

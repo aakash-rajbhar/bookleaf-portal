@@ -47,8 +47,8 @@ Each `## [section-id]` heading below is a slice the AI layer can load independen
 |---|---|---|
 | Royalty & Payments | Published 4 months ago, no royalty yet | Acknowledge frustration. Explain quarterly cycle + 45-day window. Check bank details linked. Give specific next payout date. If genuinely overdue, escalate with 48-hour timeline. |
 | Royalty & Payments | Sold 200 copies but only got Rs 3,000 | Explain net profit calc (MRP - printing - platform commission - shipping). Offer line-by-line breakdown. Not defensive; transparent. |
-| ISBN & Metadata | Amazon shows different ISBN than physical copy | High priority. Serious data issue. Confirm escalation to production team immediately. 48-hour timeline. |
+| ISBN & Metadata Issues | Amazon shows different ISBN than physical copy | High priority. Serious data issue. Confirm escalation to production team immediately. 48-hour timeline. |
 | Printing & Quality | Author copies blurry, pages misaligned | Apologise sincerely. Ask for photos. Confirm free reprint once verified. 5-7 business days for reprint. |
-| Distribution | Shows "Currently Unavailable" on Amazon | Typically stock sync issue. Confirm re-sync triggered with distribution team. 24-48 hours. |
-| Production Updates | 3 weeks in typesetting, when done? | Check actual status. If delayed, be honest about why (e.g. waiting on author approval). Give specific updated timeline. Don't blame author; frame collaboratively. |
-| General | Can I update description on Amazon after live? | Yes, via dashboard or emailing BookLeaf team. Changes reflect on platforms within 3-5 business days. |
+| Distribution & Availability | Shows "Currently Unavailable" on Amazon | Typically stock sync issue. Confirm re-sync triggered with distribution team. 24-48 hours. |
+| Book Status & Production Updates | 3 weeks in typesetting, when done? | Check actual status. If delayed, be honest about why (e.g. waiting on author approval). Give specific updated timeline. Don't blame author; frame collaboratively. |
+| General Inquiry | Can I update description on Amazon after live? | Yes, via dashboard or emailing BookLeaf team. Changes reflect on platforms within 3-5 business days. |

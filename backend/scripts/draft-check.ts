@@ -81,7 +81,7 @@ async function runCheck() {
     {
       label: 'BK013: Meera Sen (Book In Production - Cover Design)',
       bookId: 'BK013',
-      category: 'Production Updates' as TicketCategory,
+      category: 'Book Status & Production Updates' as TicketCategory,
       subject: 'Update on cover design for Midnight in Mysore',
       description:
         'It has been several weeks since typesetting completed. When can I review the cover design draft?',
@@ -98,7 +98,7 @@ async function runCheck() {
       label: 'General Ticket: No Book Linked (General Inquiry)',
       bookId: null,
       authorName: 'Priya Sharma',
-      category: 'General' as TicketCategory,
+      category: 'General Inquiry' as TicketCategory,
       subject: 'Updating author bio on BookLeaf catalog',
       description:
         'Can I update my author biography and profile photo on Amazon and BookLeaf Store now that my book is listed?',

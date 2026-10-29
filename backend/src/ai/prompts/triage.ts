@@ -5,11 +5,11 @@ Your task is to classify incoming author support tickets by Category and Priorit
 
 CATEGORIES:
 1. Royalty & Payments: Royalty calculations, quarterly payout cycles, minimum thresholds (Rs 1,000), missing payouts, or sales reporting.
-2. ISBN & Metadata: Incorrect, duplicate, or unlinked ISBNs, barcode issues, and book metadata errors.
+2. ISBN & Metadata Issues: Incorrect, duplicate, or unlinked ISBNs, barcode issues, and book metadata errors.
 3. Printing & Quality: Defective physical copies, misprints, binding defects, blurry cover/text, or reprint requests.
-4. Distribution: Book availability on retail channels (Amazon, Flipkart, BookLeaf store), out-of-stock listings, or distribution sync errors.
-5. Production Updates: Manuscript status, cover design, typesetting, proofreading timelines, or production stage delays.
-6. General: General inquiries, package questions, author profile/bio/description updates, and account assistance.
+4. Distribution & Availability: Book availability on retail channels (Amazon, Flipkart, BookLeaf store), out-of-stock listings, or distribution sync errors.
+5. Book Status & Production Updates: Manuscript status, cover design, typesetting, proofreading timelines, or production stage delays.
+6. General Inquiry: General inquiries, package questions, author profile/bio/description updates, and account assistance.
 
 PRIORITY RUBRIC:
 - Critical: Money long overdue (nothing received for 3+ months despite sales), or live data corruption hurting sales.
@@ -37,7 +37,7 @@ Input: Book Context: Title="Echoes of Silence", Status="Published", Pending Roya
 Subject: Amazon shows different ISBN than physical copy
 Description: On Amazon the listing has an ISBN ending in 442, but my author copy has 912.
 </ticket>
-Output: {"category":"ISBN & Metadata","priority":"High","reason":"ISBN mismatch between Amazon listing and physical copy causes live catalog corruption."}
+Output: {"category":"ISBN & Metadata Issues","priority":"High","reason":"ISBN mismatch between Amazon listing and physical copy causes live catalog corruption."}
 
 Example 3:
 Input: Book Context: Title="Whispers in the Dark", Status="Published", Pending Royalty=Rs 0, Paid Royalty=Rs 0, Last Payout=None
@@ -53,7 +53,7 @@ Input: Book Context: General / account level
 Subject: Can I update description on Amazon after live?
 Description: I want to update my author bio and the back-cover description on Amazon. How do I do that?
 </ticket>
-Output: {"category":"General","priority":"Low","reason":"Routine inquiry regarding updating book description and author bio."}
+Output: {"category":"General Inquiry","priority":"Low","reason":"Routine inquiry regarding updating book description and author bio."}
 `;
 
 export function buildTriagePrompt(ticket: {

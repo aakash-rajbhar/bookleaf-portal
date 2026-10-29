@@ -9,11 +9,11 @@ export type TicketStatus = (typeof TICKET_STATUSES)[number];
 
 export const TICKET_CATEGORIES = [
   'Royalty & Payments',
-  'ISBN & Metadata',
+  'ISBN & Metadata Issues',
   'Printing & Quality',
-  'Distribution',
-  'Production Updates',
-  'General',
+  'Distribution & Availability',
+  'Book Status & Production Updates',
+  'General Inquiry',
 ] as const;
 
 export type TicketCategory = (typeof TICKET_CATEGORIES)[number];
