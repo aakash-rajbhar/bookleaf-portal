@@ -33,21 +33,25 @@ export function fallbackDraft(input: FallbackDraftInput): string {
       }
 
       if (facts?.likelyOverdue) {
+        const elapsedMonths = facts.daysSinceReference
+          ? Math.round(facts.daysSinceReference / 30)
+          : null;
+        const elapsedText = elapsedMonths ? `approximately ${elapsedMonths} months` : 'the expected timeframe';
         return (
           `Hello ${firstName},\n\n` +
           `Thank you for reaching out to BookLeaf Support. I understand your concern regarding the pending royalty payment of Rs ${(facts.royaltyPending ?? 0).toLocaleString('en-IN')} for "${facts.title}".\n\n` +
-          `This delay is on our end, and we sincerely apologize for the inconvenience. I have escalated this issue directly to our finance team for immediate investigation. We will verify your bank details and get back to you with a resolution within 48 hours.\n\n` +
+          `Our records indicate that ${elapsedText} have passed since reference date without payout. This delay is on our end, and we sincerely apologize for the inconvenience. Our team will look into this and get back to you with an update within 48 hours.\n\n` +
           `Please ensure your payout details in the author dashboard are up to date.\n\n` +
           `Warm regards,\n` +
           `BookLeaf Support Team`
         );
       }
 
-      if (facts?.pendingBelowThreshold) {
+      if (facts?.rollsOver || facts?.pendingBelowThreshold) {
         return (
           `Hello ${firstName},\n\n` +
           `Thank you for reaching out. Regarding "${facts.title}", your current pending royalty balance is Rs ${(facts.royaltyPending ?? 0).toLocaleString('en-IN')}.\n\n` +
-          `Under BookLeaf policy, our minimum payout threshold is Rs 1,000. Balances below this amount roll over to the next quarterly payout cycle, scheduled for ${facts.nextPayoutDeadline}.\n\n` +
+          `Under BookLeaf policy, our minimum payout threshold is Rs 1,000. Because your balance is below Rs 1,000, it carries into the next quarterly calculation and will be paid once accumulated royalties reach Rs 1,000.\n\n` +
           `You can view your detailed sales breakdown anytime on your author dashboard. Please let us know if you have any questions.\n\n` +
           `Warm regards,\n` +
           `BookLeaf Support Team`
@@ -57,7 +61,7 @@ export function fallbackDraft(input: FallbackDraftInput): string {
       return (
         `Hello ${firstName},\n\n` +
         `Thank you for contacting BookLeaf Support regarding your royalties${facts ? ` for "${facts.title}"` : ''}.\n\n` +
-        `Our records show ${facts ? `Rs ${(facts.royaltyPaid ?? 0).toLocaleString('en-IN')} paid to date and Rs ${(facts.royaltyPending ?? 0).toLocaleString('en-IN')} currently pending` : 'that your royalty inquiry has been received'}. Royalties are calculated quarterly and distributed within 45 days of quarter end. Our finance team will review your account and follow up within 48 hours.\n\n` +
+        `Our records show ${facts ? `Rs ${(facts.royaltyPaid ?? 0).toLocaleString('en-IN')} paid to date and Rs ${(facts.royaltyPending ?? 0).toLocaleString('en-IN')} currently pending` : 'that your royalty inquiry has been received'}. Royalties are calculated quarterly and distributed within 45 days of quarter end. Our team will review your account and follow up within 48 hours.\n\n` +
         `Warm regards,\n` +
         `BookLeaf Support Team`
       );
@@ -92,15 +96,18 @@ export function fallbackDraft(input: FallbackDraftInput): string {
         `BookLeaf Support Team`
       );
 
-    case 'Book Status & Production Updates':
+    case 'Book Status & Production Updates': {
+      const stage = facts?.productionStage ?? (facts?.inProduction ? 'production' : 'production');
       return (
         `Hello ${firstName},\n\n` +
         `Thank you for checking in on the production progress of "${facts?.title ?? 'your book'}".\n\n` +
-        `Your book is currently in the ${facts?.productionStage ?? 'production'} stage. Our publishing team is actively working on it. We will review the exact status and provide you with an updated timeline within 48 hours.\n\n` +
+        `Your book is currently in the ${stage} stage. The production workflow stages are: Manuscript Received -> Editing (if opted) -> Cover Design -> Typesetting -> Proofreading -> ISBN Assignment -> Printing -> Distribution Setup -> Published & Live.\n\n` +
+        `Our team will follow up with you within 48 hours with an updated timeline.\n\n` +
         `Please feel free to reach out if you have any questions in the meantime.\n\n` +
         `Warm regards,\n` +
         `BookLeaf Support Team`
       );
+    }
 
     case 'General Inquiry':
     default:

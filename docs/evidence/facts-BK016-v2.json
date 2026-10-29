@@ -1,0 +1,23 @@
+{
+  "title": "The Nagpur Notebooks",
+  "status": "Published & Live",
+  "inProduction": false,
+  "productionStage": null,
+  "mrp": 299,
+  "copiesSold": 34,
+  "royaltyEarned": 850,
+  "royaltyPaid": 0,
+  "royaltyPending": 850,
+  "lastPayoutDate": null,
+  "neverPaid": true,
+  "pendingBelowThreshold": true,
+  "rollsOver": true,
+  "platforms": [
+    "Amazon India",
+    "BookLeaf Store"
+  ],
+  "printPartner": "In-House",
+  "daysSinceReference": 723,
+  "likelyOverdue": false,
+  "nextPayoutDeadline": null
+}

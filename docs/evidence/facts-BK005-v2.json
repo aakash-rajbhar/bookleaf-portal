@@ -1,0 +1,23 @@
+{
+  "title": "Between Two Temples",
+  "status": "Published & Live",
+  "inProduction": false,
+  "productionStage": null,
+  "mrp": 425,
+  "copiesSold": 67,
+  "royaltyEarned": 2546,
+  "royaltyPaid": 0,
+  "royaltyPending": 2546,
+  "lastPayoutDate": null,
+  "neverPaid": true,
+  "pendingBelowThreshold": false,
+  "rollsOver": false,
+  "platforms": [
+    "Amazon India",
+    "BookLeaf Store"
+  ],
+  "printPartner": "Epitome Books",
+  "daysSinceReference": 846,
+  "likelyOverdue": true,
+  "nextPayoutDeadline": "2026-11-14"
+}

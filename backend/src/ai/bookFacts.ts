@@ -55,11 +55,12 @@ export interface BookFacts {
   lastPayoutDate: string | null;
   neverPaid: boolean;
   pendingBelowThreshold: boolean;
+  rollsOver: boolean;
   platforms: string[];
   printPartner: string | null;
   daysSinceReference: number | null;
   likelyOverdue: boolean;
-  nextPayoutDeadline: string;
+  nextPayoutDeadline: string | null;
 }
 
 /**
@@ -141,7 +142,6 @@ export function computeBookFacts(
     : [];
 
   const printPartner = book.printPartner ?? book.print_partner ?? null;
-  const nextPayoutDeadline = computeNextPayoutDeadline(now);
 
   if (inProduction) {
     return {
@@ -157,11 +157,12 @@ export function computeBookFacts(
       lastPayoutDate: null,
       neverPaid: false,
       pendingBelowThreshold: false,
+      rollsOver: false,
       platforms,
       printPartner,
       daysSinceReference: null,
       likelyOverdue: false,
-      nextPayoutDeadline,
+      nextPayoutDeadline: null,
     };
   }
 
@@ -169,18 +170,31 @@ export function computeBookFacts(
   const copiesSold = Number(
     book.copiesSold ?? book.copies_sold ?? book.total_copies_sold ?? 0
   );
-  const royaltyEarned = Number(
-    book.royaltyEarned ?? book.royalty_earned ?? book.total_royalty_earned ?? 0
-  );
-  const royaltyPaid = Number(book.royaltyPaid ?? book.royalty_paid ?? 0);
-  const royaltyPending = Number(book.royaltyPending ?? book.royalty_pending ?? 0);
+
+  const rawEarned = book.royaltyEarned ?? book.royalty_earned ?? book.total_royalty_earned;
+  const rawPaid = book.royaltyPaid ?? book.royalty_paid;
+  const rawPending = book.royaltyPending ?? book.royalty_pending;
+
+  const royaltyFieldsAreNull =
+    (rawEarned === undefined || rawEarned === null) &&
+    (rawPaid === undefined || rawPaid === null) &&
+    (rawPending === undefined || rawPending === null);
+
+  const royaltyEarned =
+    rawEarned !== undefined && rawEarned !== null ? Number(rawEarned) : null;
+  const royaltyPaid =
+    rawPaid !== undefined && rawPaid !== null ? Number(rawPaid) : null;
+  const royaltyPending =
+    rawPending !== undefined && rawPending !== null ? Number(rawPending) : null;
 
   const lastPayoutDate =
     book.lastPayoutDate ?? book.last_payout_date ?? book.last_royalty_payout_date ?? null;
   const publicationDate = book.publicationDate ?? book.publication_date ?? null;
 
-  const neverPaid = royaltyPaid === 0 && !lastPayoutDate;
-  const pendingBelowThreshold = royaltyPending < ROYALTY_MIN_PAYOUT_THRESHOLD;
+  const neverPaid = (royaltyPaid === 0 || royaltyPaid === null) && !lastPayoutDate;
+  const pendingBelowThreshold =
+    royaltyPending !== null ? royaltyPending < ROYALTY_MIN_PAYOUT_THRESHOLD : false;
+  const rollsOver = pendingBelowThreshold;
 
   const referenceDateStr = lastPayoutDate ?? publicationDate;
   let daysSinceReference: number | null = null;
@@ -194,9 +208,15 @@ export function computeBookFacts(
   }
 
   const likelyOverdue =
+    royaltyPending !== null &&
     royaltyPending >= ROYALTY_MIN_PAYOUT_THRESHOLD &&
     daysSinceReference !== null &&
     daysSinceReference > OVERDUE_DAYS_THRESHOLD;
+
+  let nextPayoutDeadline: string | null = null;
+  if (!pendingBelowThreshold && !royaltyFieldsAreNull && royaltyPending !== null) {
+    nextPayoutDeadline = computeNextPayoutDeadline(now);
+  }
 
   return {
     title,
@@ -211,6 +231,7 @@ export function computeBookFacts(
     lastPayoutDate,
     neverPaid,
     pendingBelowThreshold,
+    rollsOver,
     platforms,
     printPartner,
     daysSinceReference,
