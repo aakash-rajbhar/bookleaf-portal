@@ -20,13 +20,13 @@
 | T13a | Admin ticket queue | done |
 | T13b | Admin ticket detail with AI draft editor | done |
 | T14 | Deploy prep + demo data (Render + Vercel) | done |
-| T15 | README, API docs, 1-page write-up | todo |
+| T15 | README, API docs, 1-page write-up | done |
 
 ## Last session
 - Agent: Antigravity (Gemini)
-- Done: Category alignment with exact assignment specification (updated `backend/src/constants/ticket.ts` as single source of truth to use `'Royalty & Payments'`, `'ISBN & Metadata Issues'`, `'Printing & Quality'`, `'Distribution & Availability'`, `'Book Status & Production Updates'`, `'General Inquiry'`; added migration `004_rename_isbn_category.sql` dropping and recreating `tickets_category_check` and migrating existing rows; updated `backend/scripts/seed-demo.ts` including fixing ticket 2 `aiReason` from "Critical" to "High-priority"; updated AI triage prompt & few-shot examples `ai/prompts/triage.ts`; updated eval cases `ai/evals/triageCases.json`; updated `ai/fallbackClassifier.ts`, `ai/fallbackDraft.ts`, `ai/knowledgeBase.ts`, `ai/triage.ts`, and `ai/providers/mock.ts`; updated `backend/scripts/draft-check.ts`; updated frontend types `frontend/src/api/types.ts` and `CategoryBadge.tsx`; updated `docs/KNOWLEDGE_BASE.md` and `docs/DECISIONS.md`; successfully executed `npm run migrate` on dev DB, reseeded demo dataset with `reset:demo`, verified `npx tsx scripts/draft-check.ts` 5/5 cases, verified `eval:triage` 100% fallback accuracy across all 19 cases, and passed backend + frontend typechecks).
-- Not done: T15 (README, API docs, 1-page write-up).
-- Next: T15 (`docs/tasks/T15-docs.md`).
+- Done: T15 complete (wrote comprehensive root `README.md` with live demo placeholders, demo test credentials table highlighting specific author edge cases, clean local setup instructions, architecture and layer diagrams, AI integration benchmarks and anti-hallucination prompt strategies, cost management telemetry, verified example drafts, testing commands, and known limitations; wrote verified `docs/API.md` documenting every endpoint, Zod validation limits, error response shape, and SSE token auth flow; wrote 1-page architectural `docs/WRITEUP.md` covering priorities, trade-offs, and enterprise production scaling; created Postman collection in `docs/postman/bookleaf.postman_collection.json`). All tasks T01-T15 are now 100% complete!
+- Not done: none (all tasks complete).
+- Next: Final repository submission and live demo verification.
 - Known bugs: none.
 
 

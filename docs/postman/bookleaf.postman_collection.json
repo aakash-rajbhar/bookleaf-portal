@@ -1,0 +1,331 @@
+{
+  "info": {
+    "name": "BookLeaf Author Support Portal API",
+    "_postman_id": "bookleaf-api-collection",
+    "description": "Postman collection for BookLeaf Author Support Portal REST API (/api/v1).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Author - Priya)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"priya.sharma@email.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@bookleaf.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events (SSE)",
+      "item": [
+        {
+          "name": "Get Stream Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/events/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "List Books",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/books",
+              "host": ["{{baseUrl}}"],
+              "path": ["books"]
+            }
+          }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/books/BK001",
+              "host": ["{{baseUrl}}"],
+              "path": ["books", "BK001"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Author Tickets",
+      "item": [
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": \"BK001\",\n  \"subject\": \"Checking royalty timeline\",\n  \"description\": \"Could you please clarify when the upcoming quarterly royalty statements will be finalized?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tickets",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets"]
+            }
+          }
+        },
+        {
+          "name": "List Author Tickets",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/tickets?limit=25&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets"],
+              "query": [
+                { "key": "limit", "value": "25" },
+                { "key": "offset", "value": "0" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Author Ticket by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/tickets/d0000000-0000-4000-a000-000000000002",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets", "d0000000-0000-4000-a000-000000000002"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Tickets",
+      "item": [
+        {
+          "name": "List Tickets (Queue)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets?sort=urgency&limit=25",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets"],
+              "query": [
+                { "key": "sort", "value": "urgency" },
+                { "key": "limit", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Ticket Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001"]
+            }
+          }
+        },
+        {
+          "name": "Patch Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\",\n  \"assignedTo\": \"me\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001"]
+            }
+          }
+        },
+        {
+          "name": "Generate AI Draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"regenerate\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001/draft",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001", "draft"]
+            }
+          }
+        },
+        {
+          "name": "Send Reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Hello Ananya, our finance team has verified your bank details and scheduled your transfer.\",\n  \"markResolved\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001/reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001", "reply"]
+            }
+          }
+        },
+        {
+          "name": "Add Internal Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Spoke with finance team; payment initiated for Friday cycle.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001", "notes"]
+            }
+          }
+        },
+        {
+          "name": "Retry Triage",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tickets/d0000000-0000-4000-a000-000000000001/triage",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "tickets", "d0000000-0000-4000-a000-000000000001", "triage"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
