@@ -1,0 +1,36 @@
+{
+  "ticketA": {
+    "id": "fb14f684-0211-416a-a795-a5dbca33246a",
+    "bookId": "BK005",
+    "author": "Ananya Reddy",
+    "category": "Royalty & Payments",
+    "categorySource": "ai",
+    "priority": "Critical",
+    "prioritySource": "ai",
+    "aiStatus": "done",
+    "aiReason": "Royalty payout overdue past 3+ months despite accumulated earnings."
+  },
+  "ticketB": {
+    "id": "6dc06d91-1348-4a98-9af9-380086db4625",
+    "bookId": "BK016",
+    "author": "Kavita Deshmukh",
+    "category": "Royalty & Payments",
+    "categorySource": "ai",
+    "priority": "Medium",
+    "prioritySource": "ai",
+    "aiStatus": "done",
+    "aiReason": "Inquiry regarding missing royalty payout on dashboard earnings below threshold or processing status."
+  },
+  "ticketC": {
+    "id": "8cbf773b-828a-4a12-9cb0-82bbfacaafc3",
+    "bookId": "BK015",
+    "author": "Kavita Deshmukh",
+    "category": "Book Status & Production Updates",
+    "categorySource": "ai",
+    "priority": "Medium",
+    "prioritySource": "ai",
+    "aiStatus": "done",
+    "aiReason": "Author inquiring about production timeline and current status of typesetting."
+  },
+  "cachingVerified": true
+}

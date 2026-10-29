@@ -39,3 +39,37 @@ To scale the BookLeaf portal from this MVP to enterprise production handling tho
 4. **Direct Cloud Storage**: Implement direct-to-S3/R2 presigned upload URLs for file attachments with server-side virus scanning and image thumbnail generation.
 5. **Hardened Authentication**: Transition auth tokens to **`httpOnly`, `Secure`, `SameSite=Lax` cookies** with sliding refresh tokens, rate-limited login endpoints with Redis-backed IP blocking, and mandatory MFA for administrative personnel.
 6. **Retailer Ingestion Webhooks**: Hook real-time catalog feeds from Amazon SP-API and Flipkart Marketplace APIs to auto-detect and resolve listing discrepancies before authors even submit tickets.
+
+---
+
+## 4. Measured AI System Performance & Empirical Benchmarks
+
+All figures below are strictly measured from live runs and database logs (`docs/evidence/`):
+
+### Triage Classification Accuracy (19 Cases)
+- **Evaluation Dataset**: 19 hand-written test cases (`backend/src/ai/evals/triageCases.json`), authored alongside the system rules (small, controlled sample).
+- **Category Accuracy**: **100.0%** (19/19) for both the rule-based fallback and primary provider (`gemini-3.5-flash-lite`).
+- **Priority Accuracy**:
+  - Rule-Based Fallback: **100.0%** (19/19 exact match), 0.0 ms latency.
+  - Primary Provider (`gemini-3.5-flash-lite`): **94.7%** (18/19 exact match), **100.0%** within one level, **1,301.2 ms** avg latency.
+  - *Discrepancy Analysis*: On case `kb-2` (disputed copy sales vs payout), the model classified priority as `High` while the author's label was `Medium`. The model adhered to the KB rubric specifying High for royalty calculation disputes. Zero provider failures or fallbacks occurred during evaluation.
+
+### Token Consumption & Latency Telemetry (Live Database)
+Queried from `ai_usage_log` across live API executions (`model <> 'mock-model'`):
+- **Draft Reply Generation** (Sample size: 3 calls):
+  - Average prompt tokens: **1,091**
+  - Average completion tokens: **201**
+  - Average latency: **7,603 ms** (Max latency: 8,333 ms)
+  - Failures: **0**
+- **Triage Classification** (Sample size: 3 calls):
+  - Average prompt tokens: **937**
+  - Average completion tokens: **33**
+  - Average latency: **4,449 ms** (Max latency: 5,575 ms)
+  - Failures: **0**
+- **Zero-Token Operations**: Ticket listing, ticket retrieval, viewing cached drafts (`cached: true`), sending manual replies, and executing fallback template drafts consume **0 LLM tokens**.
+
+### Grounded Draft Adherence & Word Limits
+Tested on three live author tickets (BK005, BK016, BK015):
+- **BK005** (Ananya Reddy, Overdue Royalty): **169 words** (< 180 words). Exact match on ₹2,546 pending, 67 copies sold, ₹1,000 threshold. Correctly owned delay and committed to 48h investigation.
+- **BK016** (Kavita Deshmukh, Below Threshold): **172 words** (< 180 words). Exact match on ₹850 earned, ₹1,000 threshold, quarterly rollover, and November 14, 2026 deadline.
+- **BK015** (Kavita Deshmukh, In Production): **137 words** (< 180 words). Accurately identified Typesetting stage with zero hallucinated financial/sales figures. *(Note: The phrase "Our typesetting team is currently finalizing your layout" was a conversational assumption by the LLM, as the database facts specified only that the book was in the Typesetting stage).*

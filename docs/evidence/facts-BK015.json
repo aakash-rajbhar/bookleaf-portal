@@ -1,0 +1,19 @@
+{
+  "title": "Raising Roots",
+  "status": "In Production - Typesetting",
+  "inProduction": true,
+  "productionStage": "Typesetting",
+  "mrp": null,
+  "copiesSold": 0,
+  "royaltyEarned": null,
+  "royaltyPaid": null,
+  "royaltyPending": null,
+  "lastPayoutDate": null,
+  "neverPaid": false,
+  "pendingBelowThreshold": false,
+  "platforms": [],
+  "printPartner": null,
+  "daysSinceReference": null,
+  "likelyOverdue": false,
+  "nextPayoutDeadline": "2026-11-14"
+}

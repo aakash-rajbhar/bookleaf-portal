@@ -1,0 +1,47 @@
+
+> bookleaf-backend@0.1.0 eval:triage
+> tsx scripts/eval-triage.ts --fallback-only
+
+
+============================================================
+BookLeaf AI Triage Evaluation (19 labeled test cases)
+Mode: Fallback Only
+============================================================
+
+--- 1. Evaluating Rule-Based Fallback Classifier ---
+
+Fallback Classifier Case Breakdown:
+ID                 | Category (Exp vs Act)                | Priority (Exp vs Act) | Match
+-------------------|--------------------------------------|-----------------------|------
+kb-1               | Royalty & Payme vs Royalty & Payme   | Critical vs Critical  | ✓ ALL
+kb-2               | Royalty & Payme vs Royalty & Payme   | Medium vs Medium      | ✓ ALL
+kb-3               | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+kb-4               | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+kb-5               | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+kb-6               | Book Status & P vs Book Status & P   | Medium vs Medium      | ✓ ALL
+kb-7               | General Inquiry vs General Inquiry   | Low vs Low            | ✓ ALL
+custom-1-typos     | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+custom-2-hinglish  | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+custom-3-short     | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-4-ambiguous | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-5-prompt-injection | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-6-critical-royalty | Royalty & Payme vs Royalty & Payme   | Critical vs Critical  | ✓ ALL
+custom-7-spine-binding | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+custom-8-cover-revision | Book Status & P vs Book Status & P   | Medium vs Medium      | ✓ ALL
+custom-9-bio-update | General Inquiry vs General Inquiry   | Low vs Low            | ✓ ALL
+custom-10-payout-schedule | Royalty & Payme vs Royalty & Payme   | Medium vs Medium      | ✓ ALL
+custom-11-flipkart-missing | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+custom-12-barcode-scan | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+
+============================================================
+                 Triage Accuracy Summary                    
+============================================================
+| Metric                    | Fallback Classifier | Primary Provider     |
+|---------------------------|---------------------|----------------------|
+| Total Cases               | 19                  | N/A                  |
+| Category Accuracy         | 100.0%              | N/A                  |
+| Priority Exact Match      | 100.0%              | N/A                  |
+| Priority Within 1 Level   | 100.0%              | N/A                  |
+| Avg Latency               | 0.0ms | N/A                  |
+============================================================
+

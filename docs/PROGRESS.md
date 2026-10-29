@@ -24,9 +24,13 @@
 
 ## Last session
 - Agent: Antigravity (Gemini)
-- Done: T15 complete (wrote comprehensive root `README.md` with live demo placeholders, demo test credentials table highlighting specific author edge cases, clean local setup instructions, architecture and layer diagrams, AI integration benchmarks and anti-hallucination prompt strategies, cost management telemetry, verified example drafts, testing commands, and known limitations; wrote verified `docs/API.md` documenting every endpoint, Zod validation limits, error response shape, and SSE token auth flow; wrote 1-page architectural `docs/WRITEUP.md` covering priorities, trade-offs, and enterprise production scaling; created Postman collection in `docs/postman/bookleaf.postman_collection.json`). All tasks T01-T15 are now 100% complete!
-- Not done: none (all tasks complete).
-- Next: Final repository submission and live demo verification.
+- Done: Measured evaluation and live app draft benchmarks complete. Executed live evaluations with `gemini-3.5-flash-lite`:
+  1) Triage evaluation (`docs/evidence/eval-triage-real.txt` and `eval-triage-fallback.txt`): 19 cases evaluated. Fallback achieved 100% category and priority accuracy (0.0 ms). LLM achieved 100.0% category accuracy (19/19), 94.7% priority exact match (18/19), 100.0% priority within 1 level, and 1,301.2 ms avg latency. Discrepancy on `kb-2` (predicted High vs expected Medium) documented honestly.
+  2) Real live drafts on 3 author tickets (BK005, BK016, BK015): verified all drafts returned `source: 'ai'`, `model: 'gemini-3.5-flash-lite'`, `cached: false`, adhered to word counts (< 180 words), matched computed facts, and ended with clear next steps. Cached hit verified with zero new `ai_usage_log` rows. Saved raw responses and author facts to `docs/evidence/`.
+  3) Telemetry metrics from `ai_usage_log` (`docs/evidence/usage.txt`): Draft avg 1,091 prompt / 201 completion tokens / 7,603 ms (n=3); Triage avg 937 prompt / 33 completion tokens / 4,449 ms (n=3).
+  4) Updated `README.md`, `docs/WRITEUP.md`, and `docs/DECISIONS.md` (D24) with strictly measured figures and raw draft texts.
+- Not done: Live deployment URLs left as `TODO(me)` for manual deployment.
+- Next: Deploy live frontend and API if needed.
 - Known bugs: none.
 
 

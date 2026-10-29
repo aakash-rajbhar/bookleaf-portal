@@ -1,0 +1,86 @@
+
+> bookleaf-backend@0.1.0 eval:triage
+> tsx scripts/eval-triage.ts
+
+
+============================================================
+BookLeaf AI Triage Evaluation (19 labeled test cases)
+Mode: Real Provider + Fallback
+============================================================
+
+--- 1. Evaluating Rule-Based Fallback Classifier ---
+
+Fallback Classifier Case Breakdown:
+ID                 | Category (Exp vs Act)                | Priority (Exp vs Act) | Match
+-------------------|--------------------------------------|-----------------------|------
+kb-1               | Royalty & Payme vs Royalty & Payme   | Critical vs Critical  | ✓ ALL
+kb-2               | Royalty & Payme vs Royalty & Payme   | Medium vs Medium      | ✓ ALL
+kb-3               | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+kb-4               | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+kb-5               | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+kb-6               | Book Status & P vs Book Status & P   | Medium vs Medium      | ✓ ALL
+kb-7               | General Inquiry vs General Inquiry   | Low vs Low            | ✓ ALL
+custom-1-typos     | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+custom-2-hinglish  | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+custom-3-short     | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-4-ambiguous | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-5-prompt-injection | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+custom-6-critical-royalty | Royalty & Payme vs Royalty & Payme   | Critical vs Critical  | ✓ ALL
+custom-7-spine-binding | Printing & Qual vs Printing & Qual   | High vs High          | ✓ ALL
+custom-8-cover-revision | Book Status & P vs Book Status & P   | Medium vs Medium      | ✓ ALL
+custom-9-bio-update | General Inquiry vs General Inquiry   | Low vs Low            | ✓ ALL
+custom-10-payout-schedule | Royalty & Payme vs Royalty & Payme   | Medium vs Medium      | ✓ ALL
+custom-11-flipkart-missing | Distribution &  vs Distribution &    | High vs High          | ✓ ALL
+custom-12-barcode-scan | ISBN & Metadata vs ISBN & Metadata   | High vs High          | ✓ ALL
+
+--- 2. Evaluating LLM Provider ---
+[1/19] Evaluating "kb-1"... Royalty & Payments / Critical (1051ms) [ai]
+Waiting 13s for rate limit pacing...
+[2/19] Evaluating "kb-2"... Royalty & Payments / High (1833ms) [ai]
+Waiting 13s for rate limit pacing...
+[3/19] Evaluating "kb-3"... ISBN & Metadata Issues / High (1197ms) [ai]
+Waiting 13s for rate limit pacing...
+[4/19] Evaluating "kb-4"... Printing & Quality / High (1934ms) [ai]
+Waiting 13s for rate limit pacing...
+[5/19] Evaluating "kb-5"... Distribution & Availability / High (1395ms) [ai]
+Waiting 13s for rate limit pacing...
+[6/19] Evaluating "kb-6"... Book Status & Production Updates / Medium (859ms) [ai]
+Waiting 13s for rate limit pacing...
+[7/19] Evaluating "kb-7"... General Inquiry / Low (1262ms) [ai]
+Waiting 13s for rate limit pacing...
+[8/19] Evaluating "custom-1-typos"... Printing & Quality / High (918ms) [ai]
+Waiting 13s for rate limit pacing...
+[9/19] Evaluating "custom-2-hinglish"... Distribution & Availability / High (946ms) [ai]
+Waiting 13s for rate limit pacing...
+[10/19] Evaluating "custom-3-short"... ISBN & Metadata Issues / High (1296ms) [ai]
+Waiting 13s for rate limit pacing...
+[11/19] Evaluating "custom-4-ambiguous"... ISBN & Metadata Issues / High (1338ms) [ai]
+Waiting 13s for rate limit pacing...
+[12/19] Evaluating "custom-5-prompt-injection"... ISBN & Metadata Issues / High (1203ms) [ai]
+Waiting 13s for rate limit pacing...
+[13/19] Evaluating "custom-6-critical-royalty"... Royalty & Payments / Critical (1588ms) [ai]
+Waiting 13s for rate limit pacing...
+[14/19] Evaluating "custom-7-spine-binding"... Printing & Quality / High (1309ms) [ai]
+Waiting 13s for rate limit pacing...
+[15/19] Evaluating "custom-8-cover-revision"... Book Status & Production Updates / Medium (1170ms) [ai]
+Waiting 13s for rate limit pacing...
+[16/19] Evaluating "custom-9-bio-update"... General Inquiry / Low (1127ms) [ai]
+Waiting 13s for rate limit pacing...
+[17/19] Evaluating "custom-10-payout-schedule"... Royalty & Payments / Medium (1529ms) [ai]
+Waiting 13s for rate limit pacing...
+[18/19] Evaluating "custom-11-flipkart-missing"... Distribution & Availability / High (1286ms) [ai]
+Waiting 13s for rate limit pacing...
+[19/19] Evaluating "custom-12-barcode-scan"... ISBN & Metadata Issues / High (1481ms) [ai]
+
+============================================================
+                 Triage Accuracy Summary                    
+============================================================
+| Metric                    | Fallback Classifier | Primary Provider     |
+|---------------------------|---------------------|----------------------|
+| Total Cases               | 19                  | 19                   |
+| Category Accuracy         | 100.0%              | 100.0%               |
+| Priority Exact Match      | 100.0%              | 94.7%                |
+| Priority Within 1 Level   | 100.0%              | 100.0%               |
+| Avg Latency               | 0.0ms | 1301.2ms             |
+============================================================
+
