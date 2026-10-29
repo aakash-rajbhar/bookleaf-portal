@@ -1,8 +1,8 @@
-import { pool } from './pool';
+import { pool } from "./pool";
 
 export interface LogAiCallParams {
   ticketId: string | null;
-  task: 'triage' | 'draft' | 'smoke';
+  task: "triage" | "draft" | "smoke";
   model: string;
   promptTokens: number;
   completionTokens: number;
@@ -18,12 +18,11 @@ export interface LogAiCallParams {
  */
 export async function logAiCall(params: LogAiCallParams): Promise<void> {
   // Do not write an ai_usage_log row for 'not_configured' failures: no request was made
-  if (params.error === 'not_configured') {
+  if (params.error === "not_configured") {
     return;
   }
 
   try {
-    // TODO: Add thinking_tokens column to ai_usage_log in a future migration if separate reporting is required.
     // Currently, thinking tokens are folded into completion_tokens to preserve total token telemetry.
     const effectiveCompletionTokens =
       params.completionTokens + (params.thinkingTokens ?? 0);
@@ -53,6 +52,9 @@ export async function logAiCall(params: LogAiCallParams): Promise<void> {
     ]);
   } catch (err) {
     // Telemetry errors must never disrupt business operations
-    console.error('Failed to record ai_usage_log:', err instanceof Error ? err.message : String(err));
+    console.error(
+      "Failed to record ai_usage_log:",
+      err instanceof Error ? err.message : String(err),
+    );
   }
 }
