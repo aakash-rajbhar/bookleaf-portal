@@ -588,6 +588,6 @@ The repository includes deterministic verification scripts:
 
 This codebase was developed following an agentic AI pair-programming workflow:
 
-- The repository contains an **`AGENTS.md`** file, architectural decision records (**`docs/DECISIONS.md`**), and discrete task specifications (**`docs/tasks/`**), allowing multiple AI coding agents to collaborate with zero context drift.
+- The repository was developed using structured architectural decision records (**`docs/DECISIONS.md`**), comprehensive specifications, and modular interface boundaries, enabling seamless collaboration with zero context drift.
 - **Transparency**: AI coding assistants (including Antigravity / Gemini) were utilized for code generation, schema drafting, and test synthesis.
 - **Human Review**: Every line of SQL, TypeScript, business logic, security middleware, and prompt template was reviewed, tested, and verified for correctness, safety, and strict alignment with the BookLeaf take-home assignment requirements.

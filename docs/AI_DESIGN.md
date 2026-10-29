@@ -6,7 +6,7 @@ Implementations: `GeminiProvider` (@google/genai, model from `GEMINI_MODEL`), `M
 Selected via `AI_PROVIDER` env. Model choice justification (for README): free tier, fast, JSON-mode with response schema, good at short classification + drafting.
 
 ## Triage call (classification + priority, ONE call)
-- System prompt: 6 categories with one-line definitions; priority rubric; output JSON `{category, priority, reason}`.
+- System prompt: 6 exact assignment categories (`Royalty & Payments`, `ISBN & Metadata Issues`, `Printing & Quality`, `Distribution & Availability`, `Book Status & Production Updates`, `General Inquiry`) with one-line definitions; priority rubric (`Critical`, `High`, `Medium`, `Low`); output JSON `{category, priority, reason}`.
 - Input: subject + description + book status (1 line). NO KB, NO history. ~300 tokens.
 - Use Gemini JSON mode + response schema; validate with zod; invalid -> fallback.
 - Priority rubric: Critical = money overdue >3 months / data corruption affecting sales (wrong ISBN live) / legal; High = ISBN errors, printing defects, book unavailable, royalty dispute;
@@ -14,12 +14,18 @@ Selected via `AI_PROVIDER` env. Model choice justification (for README): free ti
 - Rule hint: ISBN errors are never below High (KB policy).
 
 ## Draft call
-Prompt parts (in order): (1) system: persona + tone rules from KB [tone]; (2) KB slices for the ticket's category only
-(`royalty`->[royalty]+[examples row], `isbn`, `printing`, `distribution`, `production`, general->[company]); (3) author's book facts as compact JSON
-(status, mrp, copies_sold, earned, paid, pending, last_payout_date, platforms, print_partner; "none" for General tickets);
-(4) ticket subject/description + last 3 messages max. (5) Instructions: use real numbers; do not invent dates/policy; if data missing say what we will check; end with next step + timeline.
-Computed helpers injected as facts (not left to the LLM): pending below Rs 1,000 threshold? never paid? in-production? next payout window.
-Output: plain text email-style reply signed "BookLeaf Support Team". Cap `maxOutputTokens` ~400.
+Prompt parts (in order):
+1. System: persona + tone rules from KB (`[Tone & Style Guidelines]`).
+2. Sliced KB context for ticket's category only (`[Tone]` + category section + one golden example).
+3. Author's book facts as compact JSON (`title`, `status`, `inProduction`, `productionStage`, `mrp`, `copiesSold`, `royaltyEarned`, `royaltyPaid`, `royaltyPending`, `lastPayoutDate`, `neverPaid`, `pendingBelowThreshold`, `rollsOver`, `platforms`, `printPartner`, `daysSinceReference`, `likelyOverdue`, `nextPayoutDeadline`). "General / account level" for tickets without a book.
+4. Ticket subject/description + last 3 messages max in `<ticket>...</ticket>` delimiters.
+5. Strict instructions:
+   - Ground strictly in computed facts; use exact numbers; do not invent dates or policy.
+   - When `likelyOverdue`: own delay directly, state real elapsed time in months from `daysSinceReference`, commit to 48-hour escalation, do not quote a normal payout date.
+   - When `rollsOver`: state that balance carries into next quarterly calculation and is paid once reaching Rs 1,000; state NO payout date (`nextPayoutDeadline` is null).
+   - When `inProduction`: state current stage and exact KB stage order; commit only to 48h follow-up; never discuss royalties.
+   - Forbid invented internal activity or progress (no "finalizing layout", no non-KB teams like "finance team"; refer only to "our team" or KB-listed teams).
+   - Under 180 words, plain text email, sign off as "BookLeaf Support Team". Output cap `maxOutputTokens: 600`.
 
 ## Graceful degradation
 timeout (AI_TIMEOUT_MS) -> 1 retry with backoff on 5xx/429 -> fallback. Fallback triage = keyword rules (`ai/fallbackClassifier.ts`).
